@@ -3,17 +3,19 @@ package com.ucb.SIS213.Oasis.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "rolpermiso") // Asegúrate de que el nombre de la tabla sea correcto y en minúsculas
 public class RolPermiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idrolpermiso") // Asegúrate de que el nombre de la columna sea correcto y en minúsculas
     private Long idRolPermiso;
 
     @ManyToOne
-    @JoinColumn(name = "idRol")
+    @JoinColumn(name = "rol_idrol") // Asegúrate de que el nombre de la columna sea correcto y en minúsculas
     private Rol rol;
 
     @ManyToOne
-    @JoinColumn(name = "idPermiso")
+    @JoinColumn(name = "permiso_idpermiso") // Asegúrate de que el nombre de la columna sea correcto y en minúsculas
     private Permiso permiso;
 
     // Getters and setters

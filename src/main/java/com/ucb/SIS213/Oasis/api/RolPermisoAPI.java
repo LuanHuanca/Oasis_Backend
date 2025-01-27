@@ -21,31 +21,55 @@ public class RolPermisoAPI {
 
     @GetMapping
     public ResponseDTO getAllRolPermisos() {
-        List<RolPermiso> rolPermisoList = rolPermisoBl.getAllRolPermisos();
+        List<RolPermiso> rolPermisoList;
+        try {
+            rolPermisoList = rolPermisoBl.getAllRolPermisos();
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolPermisoList);
     }
 
     @GetMapping("/{id}")
     public ResponseDTO getRolPermisoById(@PathVariable Long id) {
-        RolPermiso rolPermiso = rolPermisoBl.getRolPermisoById(id);
+        RolPermiso rolPermiso;
+        try {
+            rolPermiso = rolPermisoBl.getRolPermisoById(id);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolPermiso);
     }
 
     @PostMapping("/create")
     public ResponseDTO createRolPermiso(@RequestBody RolPermiso rolPermiso) {
-        RolPermiso rolPermisoCreado = rolPermisoBl.createRolPermiso(rolPermiso);
+        RolPermiso rolPermisoCreado;
+        try {
+            rolPermisoCreado = rolPermisoBl.createRolPermiso(rolPermiso);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolPermisoCreado);
     }
 
     @PutMapping("/update")
     public ResponseDTO updateRolPermiso(@RequestBody RolPermiso rolPermiso) {
-        RolPermiso rolPermisoActualizado = rolPermisoBl.updateRolPermiso(rolPermiso);
+        RolPermiso rolPermisoActualizado;
+        try {
+            rolPermisoActualizado = rolPermisoBl.updateRolPermiso(rolPermiso);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolPermisoActualizado);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseDTO deleteRolPermiso(@PathVariable Long id) {
-        rolPermisoBl.deleteRolPermiso(id);
+        try {
+            rolPermisoBl.deleteRolPermiso(id);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO("RolPermiso eliminado");
     }
 }

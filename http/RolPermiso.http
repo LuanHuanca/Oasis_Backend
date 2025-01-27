@@ -15,8 +15,12 @@ POST http://localhost:9999/api/v1/rolpermiso/create
 Content-Type: application/json
 
 {
-  "idRol": 1,
-  "idPermiso": 1
+  "rol": {
+    "idRol": 1
+  },
+  "permiso": {
+    "idPermiso": 2
+  }
 }
 
 ###

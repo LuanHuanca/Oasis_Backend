@@ -21,31 +21,55 @@ public class RolAPI {
 
     @GetMapping
     public ResponseDTO getAllRoles() {
-        List<Rol> rolList = rolBl.getAllRoles();
+        List<Rol> rolList;
+        try {
+            rolList = rolBl.getAllRoles();
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolList);
     }
 
     @GetMapping("/{id}")
     public ResponseDTO getRolById(@PathVariable Long id) {
-        Rol rol = rolBl.getRolById(id);
+        Rol rol;
+        try {
+            rol = rolBl.getRolById(id);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rol);
     }
 
     @PostMapping("/create")
     public ResponseDTO createRol(@RequestBody Rol rol) {
-        Rol rolCreado = rolBl.createRol(rol);
+        Rol rolCreado;
+        try {
+            rolCreado = rolBl.createRol(rol);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolCreado);
     }
 
     @PutMapping("/update")
     public ResponseDTO updateRol(@RequestBody Rol rol) {
-        Rol rolActualizado = rolBl.updateRol(rol);
+        Rol rolActualizado;
+        try {
+            rolActualizado = rolBl.updateRol(rol);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO(rolActualizado);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseDTO deleteRol(@PathVariable Long id) {
-        rolBl.deleteRol(id);
+        try {
+            rolBl.deleteRol(id);
+        } catch (Exception e) {
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
         return new ResponseDTO("Rol eliminado");
     }
 }
