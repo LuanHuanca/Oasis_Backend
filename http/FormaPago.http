@@ -1,0 +1,19 @@
+
+### Vista de todas la formas de pago
+GET http://localhost:9999/api/v1/formaPago
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una forma de pago
+GET http://localhost:9999/api/v1/formaPago/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una forma de pago
+POST http://localhost:9999/api/v1/formaPago/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "formaPago": "Visa"
+}

@@ -1,0 +1,64 @@
+### Create a CategoriaHotel
+POST http://localhost:9999/api/v1/categoriahotel/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "categoria": "Categoria 1"
+}
+
+### Create a Ciudad
+POST http://localhost:9999/api/v1/ciudad/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "ciudad": "Ciudad 1"
+}
+
+### View all hotels
+GET http://localhost:9999/api/v1/hotel
+Content-Type: application/json
+Accept: application/json
+
+### View a hotel by id
+GET http://localhost:9999/api/v1/hotel/10
+Content-Type: application/json
+Accept: application/json
+
+### Create a hotel
+POST http://localhost:9999/api/v1/hotel/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "hotel": "Hotel 1",
+    "puntuacion": 5,
+    "idCiudad": 1,
+    "idCatHot": 1,
+    "totalHabitaciones": 100,
+    "descripcion": "Descripción del Hotel 1",
+    "imagenes": "url_imagen1,url_imagen2",
+    "ubicacion": "Ubicación del Hotel 1"
+}
+
+### Update a hotel
+PUT http://localhost:9999/api/v1/hotel/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "hotel": "Updated Hotel 1",
+    "puntuacion": 4,
+    "idCiudad": 2,
+    "idCatHot": 2,
+    "totalHabitaciones": 150,
+    "descripcion": "Updated descripción del Hotel 1",
+    "imagenes": "updated_url_imagen1,updated_url_imagen2",
+    "ubicacion": "Updated ubicación del Hotel 1"
+}
+
+### Delete a hotel
+DELETE http://localhost:9999/api/v1/hotel/delete/1
+Content-Type: application/json
+Accept: application/json

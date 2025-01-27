@@ -1,0 +1,39 @@
+
+### Vista de todos los seguros
+GET http://localhost:9999/api/v1/seguro
+Content-Type: application/json
+Accept: application/json
+
+### Vista de un seguro
+GET http://localhost:9999/api/v1/seguro/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear un seguro
+POST http://localhost:9999/api/v1/seguro/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "seguro": "Seguro 1",
+    "cobertura": "Avanzada 5 ciudades",
+    "precio": 1000
+}
+
+### Actualizar un seguro
+PUT http://localhost:9999/api/v1/seguro/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "seguro": "Seguro 2",
+    "cobertura": "Intermedia 3 ciudades",
+    "precio": 1000
+}
+
+### Eliminar un seguro
+DELETE http://localhost:9999/api/v1/seguro/delete/1
+Content-Type: application/json
+Accept: application/json
+
+

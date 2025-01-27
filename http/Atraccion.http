@@ -1,0 +1,46 @@
+
+### Vista de todas las atracciones
+GET http://localhost:9999/api/v1/atraccion
+Content-Type: application/json
+Accept: application/json
+
+### Vista detallada de todas las atracciones
+GET http://localhost:9999/api/v1/atraccion/atracciones
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una atracción en particular
+GET http://localhost:9999/api/v1/atraccion/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una atracción
+POST http://localhost:9999/api/v1/atraccion
+Content-Type: application/json
+Accept: application/json
+
+{
+    "atraccion": "Atracción",
+    "idCatAtrac": 1,
+    "idCiudad": 1,
+    "precio": 100.0,
+    "detalle": "Tipo de atracción 1"
+}
+
+### Actualizar una atracción
+PUT http://localhost:9999/api/v1/atraccion/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "atraccion": "Atracción M",
+    "idCatAtrac": 1,
+    "idCiudad": 1,
+    "precio": 100.0,
+    "detalle": "Tipo de atracción 1"
+}
+
+### Eliminar una atracción
+DELETE http://localhost:9999/api/v1/atraccion/1
+Content-Type: application/json
+Accept: application/json

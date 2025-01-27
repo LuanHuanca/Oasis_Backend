@@ -1,0 +1,50 @@
+
+### Vista de todas las actividades
+GET http://localhost:9999/api/v1/actividad
+Content-Type: application/json
+Accept: application/json
+
+### Vista detallada de todas las actividades
+GET http://localhost:9999/api/v1/actividad/actividades
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una actividad
+GET http://localhost:9999/api/v1/actividad/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una actividad
+POST http://localhost:9999/api/v1/actividad/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "actividad": "Actividad 1",
+    "idCiudad": 1,
+    "idCatActi": 1,
+    "fecha": "2021-10-10",
+    "precio": 60,
+    "detalle": "Lugar de la actividad 1"
+}
+
+### Actualizar una actividad
+PUT http://localhost:9999/api/v1/actividad/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Actividad 1",
+    "descripcion": "Descripcion de la actividad 1",
+    "fecha": "2021-10-10",
+    "hora": "10:00",
+    "duracion": 60,
+    "lugar": "Lugar de la actividad 1",
+    "capacidad": 10,
+    "inscritos": 0
+}
+
+### Eliminar una actividad
+DELETE http://localhost:9999/api/v1/actividad/delete/1
+Content-Type: application/json
+Accept: application/json

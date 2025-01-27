@@ -1,0 +1,63 @@
+
+### Vista de todas reservas de viajes
+GET http://localhost:9999/api/v1/viaje
+Content-Type: application/json
+Accept: application/json
+
+### Vista detallada de todas reservas de viajes
+GET http://localhost:9999/api/v1/viaje/viajes
+Content-Type: application/json
+Accept: application/json
+
+### Vista del untimo viaje de un cliente
+GET http://localhost:9999/api/v1/viaje/find/1
+Content-Type: application/json
+Accept: application/json
+
+
+### Vista de una reserva de viaje
+GET http://localhost:9999/api/v1/viaje/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una reserva de viaje
+POST http://localhost:9999/api/v1/viaje/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "fecha": "2024-05-29",
+    "idCliente": 1,
+    "idViaje": 2,
+    "idSeguro": 4,
+    "idAlquiler": 1,
+    "idAtraccion": 1,
+    "idActividad": 1,
+    "idReservaHotel": 1
+}
+
+### Actualizar una reserva de viaje
+PUT http://localhost:9999/api/v1/viaje/update/36
+Content-Type: application/json
+Accept: application/json
+
+{
+    "fecha": "2024-05-19",
+    "idCliente": 1,
+    "idViaje": 2,
+    "idSeguro": 1,
+    "idAlquiler": 1,
+    "idAtraccion": 1,
+    "idActividad": 1,
+    "idReservaHotel": 1
+}
+
+### Eliminar una reserva de viaje
+DELETE http://localhost:9999/api/v1/viaje/delete/36
+Content-Type: application/json
+Accept: application/json
+
+### Obtener ultimo ID de viaje
+GET http://localhost:9999/api/v1/viaje/lastId
+Content-Type: application/json
+Accept: application/json

@@ -1,0 +1,36 @@
+
+### Vista de todas las ciudades
+GET http://localhost:9999/api/v1/ciudad
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una ciudad
+GET http://localhost:9999/api/v1/ciudad/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una ciudad
+POST http://localhost:9999/api/v1/ciudad/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Bogotá",
+    "pais": 2
+}
+
+### Actualizar una ciudad
+PUT http://localhost:9999/api/v1/ciudad/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Bogotá",
+    "pais": 3
+}
+
+### Eliminar una ciudad
+DELETE http://localhost:9999/api/v1/ciudad/delete/1
+Content-Type: application/json
+Accept: application/json
+

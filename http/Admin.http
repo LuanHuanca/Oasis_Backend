@@ -1,0 +1,30 @@
+### Vista de todos los administradores
+GET localhost:9999/api/v1/admin
+content-type: application/json
+accept: application/json
+
+### Crear un  administrador
+POST localhost:9999/api/v1/admin/create
+content-type: application/json
+accept: application/json
+
+{
+  "persona": {
+    "idPersona": 2,
+    "nombre": "Juan",
+    "apellidoP": "Perez",
+    "apellidoM": "Perez2",
+    "telefono": "123456789"
+  },
+  "rol" : "Admin"
+}
+
+### login
+POST http://localhost:9999/api/v1/admin/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "Juan.Perez@oasis.bo",
+  "password": "OASIS1590"
+}

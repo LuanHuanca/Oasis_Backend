@@ -1,0 +1,33 @@
+
+### Vista de todas las Aerolineas
+GET http://localhost:9999/api/v1/aerolinea
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una Aerolinea
+GET http://localhost:9999/api/v1/aerolinea/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear una Aerolinea
+POST http://localhost:9999/api/v1/aerolinea/create
+Content-Type: application/json
+Accept: application/json
+
+{
+    "aerolinea": "Aerolinea 1"
+}
+
+### Actualizar una Aerolinea
+PUT http://localhost:9999/api/v1/aerolinea/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "aerolinea": "Aerolinea 0"
+}
+
+### Eliminar una Aerolinea
+DELETE http://localhost:9999/api/v1/aerolinea/delete/1
+Content-Type: application/json
+Accept: application/json

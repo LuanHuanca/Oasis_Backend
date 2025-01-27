@@ -1,0 +1,35 @@
+
+### Vista de todos los comentarios
+GET http://localhost:9999/api/v1/comentarios
+Content-Type: application/json
+Accept: application/json
+
+### Vista de un comentario por su id
+GET http://localhost:9999/api/v1/comentarios/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear un comentario
+POST http://localhost:9999/api/v1/comentarios/create
+Content-Type: application/json
+Accept: application/json
+
+{
+  "comentario": "Comentario de prueba",
+  "clienteidCliente": 1
+}
+
+### Modificar un comentario
+PUT http://localhost:9999/api/v1/comentarios/update/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "comentario": "Comentario de prueba",
+  "clienteidCliente": 1
+}
+
+### Eliminar un comentario
+DELETE http://localhost:9999/api/v1/comentarios/delete/1
+Content-Type: application/json
+Accept: application/json

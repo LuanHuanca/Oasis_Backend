@@ -1,0 +1,22 @@
+### Vista de todas las auditorias
+GET http://localhost:9999/api/v1/auditoria
+content-type: application/json
+Accept: application/json
+
+### Crear Auditoria
+POST http://localhost:9999/api/v1/auditoria/create
+content-type: application/json
+Accept: application/json
+
+{
+  "actividad": "Auditoria de prueba",
+  "fecha": "2024-05-06",
+  "hora": "14:00:00",
+  "fechaInicio": "2024-05-06T14:00:00",
+  "fechaFin": "2024-05-06T14:30:00",
+  "ip": "172.18.14.91",
+  "idAdmin": 1,
+  "idCliente": null
+}
+
+

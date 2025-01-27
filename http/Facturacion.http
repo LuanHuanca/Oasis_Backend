@@ -1,0 +1,47 @@
+
+### Vista de todas las facturaciones
+GET http://localhost:9999/api/v1/facturacion
+Content-Type: application/json
+Accept: application/json
+
+### Vista de una facturación
+GET http://localhost:9999/api/v1/facturacion/10
+Content-Type: application/json
+Accept: application/json
+
+### Crear una facturación
+POST http://localhost:9999/api/v1/facturacion/create
+Content-Type: application/json
+Accept: application/json
+
+{
+  "fecha": "2024-06-12",
+  "nit": "1234578",
+  "clienteidCliente": 1,
+  "reservaViajeidReservaViaja": 4,
+  "formaPagoidFormP": 1
+}
+
+
+### Actualizar una facturación
+PUT http://localhost:9999/api/v1/facturacion/update/9
+Content-Type: application/json
+Accept: application/json
+
+{
+  "fecha": "2024-06-11",
+  "nit": "1234579",
+  "clienteidCliente": 1,
+  "reservaViajeidReservaViaja": 4,
+  "formaPagoidFormP": 1
+}
+
+### Eliminar una facturación
+DELETE http://localhost:9999/api/v1/facturacion/delete/9
+Content-Type: application/json
+Accept: application/json
+
+### Obtener ultimo ID de facturacion
+GET http://localhost:9999/api/v1/facturacion/lastId
+Content-Type: application/json
+Accept: application/json

@@ -1,0 +1,36 @@
+### Obtener todos los permisos
+GET http://localhost:9999/api/v1/permiso
+Accept: application/json
+
+###
+
+### Obtener un permiso por ID
+GET http://localhost:9999/api/v1/permiso/1
+Accept: application/json
+
+###
+
+### Crear un nuevo permiso
+POST http://localhost:9999/api/v1/permiso/create
+Content-Type: application/json
+
+{
+  "permiso": "READ_PRIVILEGES"
+}
+
+###
+
+### Actualizar un permiso
+PUT http://localhost:9999/api/v1/permiso/update
+Content-Type: application/json
+
+{
+  "idPermiso": 1,
+  "permiso": "WRITE_PRIVILEGES"
+}
+
+###
+
+### Eliminar un permiso
+DELETE http://localhost:9999/api/v1/permiso/delete/1
+Accept: application/json

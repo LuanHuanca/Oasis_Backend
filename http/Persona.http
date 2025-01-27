@@ -1,0 +1,38 @@
+### Vista de todas las personas
+GET http://localhost:9999/api/v1/persona
+Content-Type: application/json
+Accept: application/json
+
+### Crear una persona
+POST http://localhost:9999/api/v1/persona/create
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nombre": "Juan2",
+  "apellidoP": "Perez",
+  "apellidoM": "Perez2",
+  "telefono": "123456789"
+}
+
+### Obtener ultimo ID de persona
+GET http://localhost:9999/api/v1/persona/lastId
+Content-Type: application/json
+Accept: application/json
+
+### Modified persona
+PUT http://localhost:9999/api/v1/persona/update/3
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nombre": "Juan333",
+  "apellidoP": "Perez3",
+  "apellidoM": "Perez23",
+  "telefono": "123456789333"
+}
+
+### Eliminar persona
+DELETE http://localhost:9999/api/v1/persona/delete/3
+Content-Type: application/json
+Accept: application/json
