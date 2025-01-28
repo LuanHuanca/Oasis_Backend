@@ -295,7 +295,8 @@ INSERT INTO Rol (rol) VALUES
 ('Analista 1'),
 ('Analista 2'),
 ('Autorizador'),
-('Pasante TI');
+('Pasante TI'),
+('Usuario');
 -- Insertar datos en la tabla Permiso
 INSERT INTO Permiso (permiso) VALUES
 ('Administracion usuarios'),
