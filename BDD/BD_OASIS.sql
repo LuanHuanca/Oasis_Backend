@@ -239,13 +239,14 @@ CREATE TABLE RolPermiso (
 
 -- Table: admin
 CREATE TABLE admin (
-    idAdmin serial NOT NULL,
+    idadmin serial NOT NULL,
     correo varchar(45) NOT NULL,
     password varchar(255) NOT NULL,
-    Rol_idRol int NOT NULL,
-    Persona_idPersona int NOT NULL,
-    CONSTRAINT admin_pk PRIMARY KEY (idAdmin),
-    CONSTRAINT admin_Rol_fk FOREIGN KEY (Rol_idRol) REFERENCES Rol (idRol)
+    rol_idrol int NOT NULL,
+    persona_idpersona int NOT NULL,
+    CONSTRAINT admin_pk PRIMARY KEY (idadmin),
+    CONSTRAINT admin_rol_fk FOREIGN KEY (rol_idrol) REFERENCES rol (idrol),
+    CONSTRAINT admin_persona_fk FOREIGN KEY (persona_idpersona) REFERENCES persona (idpersona)
 );
 
 -- foreign keys

@@ -26,17 +26,17 @@ public class Admin {
     @Column(name = "correo")
     private String correo;
 
+    @Column(name = "persona_idpersona")
+    private Long idPersona;
+
     @Column(name = "password")
     private String password;
 
-    @Column(name = "rol")
-    private String rol;
+    @ManyToOne
+    @JoinColumn(name = "rol_idrol")
+    private Rol rol;
 
-    @Column(name = "Persona_idpersona")
-    private Long idPersona;
-
-    // Getters y Setters
-
+    // Getters and setters
     public Long getIdAdmin() {
         return idAdmin;
     }
@@ -53,6 +53,14 @@ public class Admin {
         this.correo = correo;
     }
 
+    public Long getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Long idPersona) {
+        this.idPersona = idPersona;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -61,20 +69,12 @@ public class Admin {
         this.password = password;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
-    }
-
-    public Long getIdPersona() {
-        return idPersona;
-    }
-
-    public void setIdPersona(Long idPersona) {
-        this.idPersona = idPersona;
     }
 
     // toString

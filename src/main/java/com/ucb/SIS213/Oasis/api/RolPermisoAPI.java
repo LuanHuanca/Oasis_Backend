@@ -5,6 +5,8 @@ import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.RolPermiso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/rolpermiso")
 public class RolPermisoAPI {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RolPermisoAPI.class);
+
     private RolPermisoBl rolPermisoBl;
 
     @Autowired
@@ -19,57 +23,59 @@ public class RolPermisoAPI {
         this.rolPermisoBl = rolPermisoBl;
     }
 
+    // Endpoint para obtener todas las relaciones rol-permiso
     @GetMapping
     public ResponseDTO getAllRolPermisos() {
-        List<RolPermiso> rolPermisoList;
+        List<RolPermiso> rolPermisos;
         try {
-            rolPermisoList = rolPermisoBl.getAllRolPermisos();
-        } catch (Exception e) {
+            rolPermisos = rolPermisoBl.getAllRolPermisos();
+            LOGGER.info("Relaciones rol-permiso encontradas");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al obtener las relaciones rol-permiso", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
-        return new ResponseDTO(rolPermisoList);
+        return new ResponseDTO(rolPermisos);
     }
 
+    // Endpoint para obtener una relación rol-permiso por su id
     @GetMapping("/{id}")
     public ResponseDTO getRolPermisoById(@PathVariable Long id) {
         RolPermiso rolPermiso;
         try {
             rolPermiso = rolPermisoBl.getRolPermisoById(id);
-        } catch (Exception e) {
+            LOGGER.info("Relación rol-permiso encontrada");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al obtener la relación rol-permiso", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
         return new ResponseDTO(rolPermiso);
     }
 
+    // Endpoint para crear una nueva relación rol-permiso
     @PostMapping("/create")
     public ResponseDTO createRolPermiso(@RequestBody RolPermiso rolPermiso) {
         RolPermiso rolPermisoCreado;
         try {
             rolPermisoCreado = rolPermisoBl.createRolPermiso(rolPermiso);
-        } catch (Exception e) {
+            LOGGER.info("Relación rol-permiso creada");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al crear la relación rol-permiso", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
         return new ResponseDTO(rolPermisoCreado);
     }
 
-    @PutMapping("/update")
-    public ResponseDTO updateRolPermiso(@RequestBody RolPermiso rolPermiso) {
-        RolPermiso rolPermisoActualizado;
+    // Endpoint para obtener los permisos según el ID del administrador
+    @GetMapping("/admin/{adminId}")
+    public ResponseDTO getPermisosByAdminId(@PathVariable Long adminId) {
+        List<RolPermiso> permisos;
         try {
-            rolPermisoActualizado = rolPermisoBl.updateRolPermiso(rolPermiso);
-        } catch (Exception e) {
+            permisos = rolPermisoBl.getPermisosByAdminId(adminId);
+            LOGGER.info("Permisos encontrados para el administrador con ID: " + adminId);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al obtener los permisos para el administrador con ID: " + adminId, e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
-        return new ResponseDTO(rolPermisoActualizado);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseDTO deleteRolPermiso(@PathVariable Long id) {
-        try {
-            rolPermisoBl.deleteRolPermiso(id);
-        } catch (Exception e) {
-            return new ResponseDTO("TASK-1000", e.getMessage());
-        }
-        return new ResponseDTO("RolPermiso eliminado");
+        return new ResponseDTO(permisos);
     }
 }

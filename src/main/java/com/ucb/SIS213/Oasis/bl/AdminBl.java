@@ -6,7 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ucb.SIS213.Oasis.dao.AdminDao;
+import com.ucb.SIS213.Oasis.dao.RolPermisoDao;
 import com.ucb.SIS213.Oasis.entity.Admin;
+import com.ucb.SIS213.Oasis.entity.RolPermiso;
 
 import java.util.List;
 
@@ -15,11 +17,13 @@ public class AdminBl {
 
     private AdminDao adminDao;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private RolPermisoDao rolPermisoDao;
 
     @Autowired
-    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, RolPermisoDao rolPermisoDao) {
         this.adminDao = adminDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.rolPermisoDao = rolPermisoDao;
     }
 
     public List<Admin> getAllAdmin() {
@@ -83,6 +87,10 @@ public class AdminBl {
             throw new RuntimeException("Admin does not exist");
         }
         adminDao.deleteById(id);
+    }
+
+    public List<RolPermiso> getPermisosByRol(String rol) {
+        return rolPermisoDao.findByRol_Rol(rol);
     }
 
 }

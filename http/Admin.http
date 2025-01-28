@@ -1,30 +1,58 @@
 ### Vista de todos los administradores
-GET localhost:9999/api/v1/admin
-content-type: application/json
-accept: application/json
+GET http://localhost:9999/api/v1/admin
+Content-Type: application/json
+Accept: application/json
 
-### Crear un  administrador
-POST localhost:9999/api/v1/admin/create
-content-type: application/json
-accept: application/json
+###
+
+### Obtener un administrador por ID
+GET http://localhost:9999/api/v1/admin/1
+Content-Type: application/json
+Accept: application/json
+
+### Crear un administrador
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+Accept: application/json
 
 {
   "persona": {
-    "idPersona": 2,
-    "nombre": "Juan",
-    "apellidoP": "Perez",
-    "apellidoM": "Perez2",
-    "telefono": "123456789"
+    "idPersona": 1,
+    "nombre": "Luis Angel",
+    "apellidoP": "Huanca",
+    "apellidoM": "Perez",
+    "telefono": "73037172"
   },
-  "rol" : "Admin"
+  "rolId": 9
 }
 
-### login
+### Login del administrador
 POST http://localhost:9999/api/v1/admin/login
 Content-Type: application/json
 Accept: application/json
 
 {
   "correo": "Juan.Perez@oasis.bo",
-  "password": "OASIS1590"
+  "password": "JuanP123456789"
 }
+
+###
+
+### Actualizar un administrador
+PUT http://localhost:9999/api/v1/admin/update
+Content-Type: application/json
+Accept: application/json
+
+{
+  "idPersona": 2,
+  "correo": "Juan.Perez@oasis.bo",
+  "password": "JuanP123456789",
+  "rol": "Admin"
+}
+
+###
+
+### Eliminar un administrador
+DELETE http://localhost:9999/api/v1/admin/delete/2
+Content-Type: application/json
+Accept: application/json

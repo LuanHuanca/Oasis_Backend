@@ -1,25 +1,28 @@
 package com.ucb.SIS213.Oasis.api;
 
-import java.util.List;
-import java.util.Map;
-
-import com.ucb.SIS213.Oasis.dto.LoginRequestDTO;
-import com.ucb.SIS213.Oasis.exep.UserException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.ucb.SIS213.Oasis.bl.AdminBl;
+import com.ucb.SIS213.Oasis.dto.AdminDTO;
+import com.ucb.SIS213.Oasis.dto.LoginRequestDTO;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Admin;
 import com.ucb.SIS213.Oasis.entity.Persona;
+import com.ucb.SIS213.Oasis.entity.Rol;
+import com.ucb.SIS213.Oasis.entity.RolPermiso;
+import com.ucb.SIS213.Oasis.exep.UserException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/admin")
 public class AdminAPI {
-
     private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AdminAPI.class);
 
-    AdminBl adminBl;
+    private AdminBl adminBl;
 
     @Autowired
     public AdminAPI(AdminBl adminBl) {
@@ -44,70 +47,69 @@ public class AdminAPI {
     @GetMapping("/{id}")
     public ResponseDTO getAdminById(@PathVariable Long id) {
         Admin admin;
-        try{
+        try {
             admin = adminBl.getAdminById(id);
             LOGGER.info("Admin encontrado");
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             LOGGER.error("Error al obtener el admin");
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
-        return new ResponseDTO(admin);
+        List<RolPermiso> permisos = adminBl.getPermisosByRol(admin.getRol().getRol());
+        return new ResponseDTO(new AdminDTO(admin, permisos));
     }
 
     @PostMapping("/create")
     public ResponseDTO createAdmin(@RequestBody Map<String, Object> requestBody) {
-        // Obtener el objeto Admin de la solicitud
-        Map<String, Object> adminMap = (Map<String, Object>) requestBody.get("persona");
-        Persona admin = convertMapToAdmin(adminMap);
+        // Obtener el objeto Persona de la solicitud
+        Map<String, Object> personaMap = (Map<String, Object>) requestBody.get("persona");
+        Persona persona = convertMapToPersona(personaMap);
 
-        //Obtener id de la persona
-        Long idPersona = admin.getIdPersona();
- 
+        // Obtener id de la persona
+        Long idPersona = persona.getIdPersona();
+
         // Crear correo de admin
-        String correoAdmin = admin.getNombre().toString() + "." + admin.getApellidoP().toString()+ "@oasis.bo";
+        String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@oasis.bo";
 
         // Crear contraseña de admin
-        String contrasenaAdmin = "OASIS1590";
+        String contrasenaAdmin = persona.getNombre()+"."+ persona.getApellidoP()+ persona.getTelefono();
+        
 
         // Recuperar Rol
-        String rol = (String) requestBody.get("rol");
+        Integer rolId = (Integer) requestBody.get("rolId");
 
         LOGGER.info("PersonaID: " + idPersona);
         LOGGER.info("Correo: " + correoAdmin);
         LOGGER.info("Contraseña: " + contrasenaAdmin);
-        LOGGER.info("Rol: " + rol);
+        LOGGER.info("Rol ID: " + rolId);
 
         Admin adminCreado = new Admin();
         adminCreado.setCorreo(correoAdmin);
         adminCreado.setPassword(contrasenaAdmin);
-        adminCreado.setRol(rol);
+        adminCreado.setRol(new Rol(rolId)); // Usar el constructor que acepta un Integer
         adminCreado.setIdPersona(idPersona);
 
         try {
             adminCreado = adminBl.createAdmin(adminCreado);
             LOGGER.info("Admin creado");
         } catch (RuntimeException e) {
-            LOGGER.error("Error al crear el admin");
+            LOGGER.error("Error al crear el admin", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
         return new ResponseDTO("");
     }
 
-    private Persona convertMapToAdmin(Map<String, Object> adminMap) {
-        // Implementa la lógica para convertir el mapa en un objeto Admin
-        // Esto puede implicar instanciar un nuevo objeto Admin y establecer sus propiedades
-        // según los valores en el mapa.
-        // Por ejemplo:
-        Persona admin = new Persona();
-        Integer idPersonaInteger = (Integer) adminMap.get("idPersona");
+    private Persona convertMapToPersona(Map<String, Object> personaMap) {
+        // Implementa la lógica para convertir el mapa en un objeto Persona
+        Persona persona = new Persona();
+        Integer idPersonaInteger = (Integer) personaMap.get("idPersona");
         Long idPersonaLong = Long.valueOf(idPersonaInteger.longValue());
-        admin.setIdPersona(idPersonaLong);
-        admin.setNombre((String) adminMap.get("nombre"));
-        admin.setApellidoP((String) adminMap.get("apellidoP"));
-        admin.setApellidoM((String) adminMap.get("apellidoM"));
-        admin.setTelefono((String) adminMap.get("telefono"));
+        persona.setIdPersona(idPersonaLong);
+        persona.setNombre((String) personaMap.get("nombre"));
+        persona.setApellidoP((String) personaMap.get("apellidoP"));
+        persona.setApellidoM((String) personaMap.get("apellidoM"));
+        persona.setTelefono((String) personaMap.get("telefono"));
 
-        return admin;
+        return persona;
     }
 
     @PostMapping("/login")
@@ -127,10 +129,10 @@ public class AdminAPI {
     @PutMapping("/update")
     public ResponseDTO updateAdmin(@RequestBody Admin admin) {
         Admin adminActualizado;
-        try{
+        try {
             adminActualizado = adminBl.updateAdmin(admin);
             LOGGER.info("Admin actualizado");
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             LOGGER.error("Error al actualizar el admin");
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
@@ -149,5 +151,4 @@ public class AdminAPI {
         }
         return new ResponseDTO("Admin eliminado");
     }
-
 }
