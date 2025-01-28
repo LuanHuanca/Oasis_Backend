@@ -1,7 +1,7 @@
 package com.ucb.SIS213.Oasis.dto;
 
 import com.ucb.SIS213.Oasis.entity.Admin;
-import com.ucb.SIS213.Oasis.entity.RolPermiso;
+import com.ucb.SIS213.Oasis.entity.AdminPermiso;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ public class AdminDTO {
     private Long idPersona;
     private String correo;
     private String rol;
-    private List<RolPermiso> permisos;
+    private List<AdminPermiso> permisos;
 
-    public AdminDTO(Admin admin, List<RolPermiso> permisos) {
+    public AdminDTO(Admin admin, List<AdminPermiso> permisos) {
         this.idPersona = admin.getIdPersona();
         this.correo = admin.getCorreo();
         this.rol = admin.getRol().getRol(); // Extraer el valor de la propiedad rol del objeto Rol
@@ -43,11 +43,11 @@ public class AdminDTO {
         this.rol = rol;
     }
 
-    public List<RolPermiso> getPermisos() {
+    public List<AdminPermiso> getPermisos() {
         return permisos;
     }
 
-    public void setPermisos(List<RolPermiso> permisos) {
+    public void setPermisos(List<AdminPermiso> permisos) {
         this.permisos = permisos;
     }
 }

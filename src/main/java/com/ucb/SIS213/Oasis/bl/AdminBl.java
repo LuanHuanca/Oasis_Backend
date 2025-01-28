@@ -1,14 +1,13 @@
 package com.ucb.SIS213.Oasis.bl;
-
 import com.ucb.SIS213.Oasis.exep.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ucb.SIS213.Oasis.dao.AdminDao;
-import com.ucb.SIS213.Oasis.dao.RolPermisoDao;
+import com.ucb.SIS213.Oasis.dao.AdminPermisoDAO;
 import com.ucb.SIS213.Oasis.entity.Admin;
-import com.ucb.SIS213.Oasis.entity.RolPermiso;
+import com.ucb.SIS213.Oasis.entity.AdminPermiso;
 
 import java.util.List;
 
@@ -17,13 +16,15 @@ public class AdminBl {
 
     private AdminDao adminDao;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private RolPermisoDao rolPermisoDao;
+    private AdminPermisoDAO adminPermisoDao;
+    private AdminPermisoBl adminPermisoBl;
+
 
     @Autowired
-    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, RolPermisoDao rolPermisoDao) {
+    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, AdminPermisoDAO rolPermisoDao) {
         this.adminDao = adminDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.rolPermisoDao = rolPermisoDao;
+        this.adminPermisoDao = adminPermisoDao;
     }
 
     public List<Admin> getAllAdmin() {
@@ -39,7 +40,7 @@ public class AdminBl {
     }
 
     public Admin createAdmin(Admin admin) {
-        System.out.println("Contraseña RECUPERADAAA: " + admin.getPassword());
+        System.out.println("Contraseña : " + admin.getPassword());
         String password = admin.getPassword();
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         admin.setPassword(hashedPassword);
@@ -89,8 +90,8 @@ public class AdminBl {
         adminDao.deleteById(id);
     }
 
-    public List<RolPermiso> getPermisosByRol(String rol) {
-        return rolPermisoDao.findByRol_Rol(rol);
+    public List<AdminPermiso> getPermisosByAdminId(Long adminId) {
+        return adminPermisoBl.getPermisosByAdminId(adminId);
     }
 
 }

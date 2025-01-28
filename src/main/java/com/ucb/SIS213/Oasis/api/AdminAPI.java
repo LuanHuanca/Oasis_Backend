@@ -7,11 +7,13 @@ import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Admin;
 import com.ucb.SIS213.Oasis.entity.Persona;
 import com.ucb.SIS213.Oasis.entity.Rol;
-import com.ucb.SIS213.Oasis.entity.RolPermiso;
+import com.ucb.SIS213.Oasis.entity.AdminPermiso;
 import com.ucb.SIS213.Oasis.exep.UserException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/admin")
 public class AdminAPI {
-    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AdminAPI.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminAPI.class);
 
     private AdminBl adminBl;
 
@@ -33,10 +35,10 @@ public class AdminAPI {
     @GetMapping
     public ResponseDTO getAllAdmins() {
         List<Admin> adminList;
-        try{
+        try {
             adminList = adminBl.getAllAdmin();
             LOGGER.info("Admins encontrados");
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             LOGGER.error("Error al obtener los admins");
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
@@ -54,7 +56,7 @@ public class AdminAPI {
             LOGGER.error("Error al obtener el admin");
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
-        List<RolPermiso> permisos = adminBl.getPermisosByRol(admin.getRol().getRol());
+        List<AdminPermiso> permisos = adminBl.getPermisosByAdminId(admin.getIdAdmin());
         return new ResponseDTO(new AdminDTO(admin, permisos));
     }
 
@@ -71,8 +73,7 @@ public class AdminAPI {
         String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@oasis.bo";
 
         // Crear contraseña de admin
-        String contrasenaAdmin = persona.getNombre()+"."+ persona.getApellidoP()+ persona.getTelefono();
-        
+        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono();
 
         // Recuperar Rol
         Integer rolId = (Integer) requestBody.get("rolId");

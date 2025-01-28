@@ -1,0 +1,52 @@
+### Obtener todas las relaciones admin-permiso
+GET http://localhost:9999/api/v1/adminpermiso
+Accept: application/json
+
+###
+
+### Obtener una relación admin-permiso por ID
+GET http://localhost:9999/api/v1/adminpermiso/1
+Accept: application/json
+
+###
+
+### Crear una nueva relación admin-permiso
+POST http://localhost:9999/api/v1/adminpermiso/create
+Content-Type: application/json
+
+{
+  "admin": {
+    "idAdmin": 1
+  },
+  "permiso": {
+    "idPermiso": 2
+  }
+}
+
+###
+
+### Obtener permisos por ID de administrador
+GET http://localhost:9999/api/v1/adminpermiso/admin/1
+Accept: application/json
+
+###
+
+### Actualizar una relación admin-permiso
+PUT http://localhost:9999/api/v1/adminpermiso/update
+Content-Type: application/json
+
+{
+  "idAdminPermiso": 1,
+  "admin": {
+    "idAdmin": 1
+  },
+  "permiso": {
+    "idPermiso": 2
+  }
+}
+
+###
+
+### Eliminar una relación admin-permiso
+DELETE http://localhost:9999/api/v1/adminpermiso/delete/1
+Accept: application/json

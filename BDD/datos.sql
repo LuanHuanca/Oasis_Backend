@@ -285,5 +285,25 @@ INSERT INTO Auto (modelo, marca, tipo) VALUES
 ('MX-5', 'Mazda', 'Roadster'),
 ('CX-3', 'Mazda', 'SUV');
 
-
-	
+-- Insertar datos en la tabla Rol
+INSERT INTO Rol (rol) VALUES
+('Gerente'),
+('Tecnología'),
+('Seguridad'),
+('Contador'),
+('Auditor'),
+('Analista 1'),
+('Analista 2'),
+('Autorizador'),
+('Pasante TI');
+-- Insertar datos en la tabla Permiso
+INSERT INTO Permiso (permiso) VALUES
+('Administracion usuarios'),
+('Documentos internos'),
+('Correo'),
+('Consultas'),
+('Modificaciones'),
+('Registro cuentas'),
+('ABM Usuarios'),
+('Dashboard'),
+('Baja de comprobantes');
