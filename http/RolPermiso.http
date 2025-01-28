@@ -25,14 +25,24 @@ Content-Type: application/json
 
 ###
 
+### Obtener permisos por ID de administrador
+GET http://localhost:9999/api/v1/rolpermiso/admin/1
+Accept: application/json
+
+###
+
 ### Actualizar una relación rol-permiso
 PUT http://localhost:9999/api/v1/rolpermiso/update
 Content-Type: application/json
 
 {
   "idRolPermiso": 1,
-  "idRol": 1,
-  "idPermiso": 2
+  "rol": {
+    "idRol": 1
+  },
+  "permiso": {
+    "idPermiso": 2
+  }
 }
 
 ###

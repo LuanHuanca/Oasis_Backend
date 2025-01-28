@@ -32,6 +32,10 @@ public class RolPermisoBl {
         return rolPermisoDao.save(rolPermiso);
     }
 
+    public List<RolPermiso> getPermisosByAdminId(Long adminId) {
+        return rolPermisoDao.findPermisosByAdminId(adminId);
+    }
+
     public void deleteRolPermiso(Long id) {
         rolPermisoDao.deleteById(id);
     }
