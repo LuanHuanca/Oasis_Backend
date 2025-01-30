@@ -1,45 +1,44 @@
-package com.ucb.SIS213.Oasis.entity;
+package com.ucb.SIS213.Oasis.dto;
 
-import jakarta.persistence.*;
+import com.ucb.SIS213.Oasis.entity.Auditoria;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
-@Entity
-@Table(name = "auditoria")
-public class Auditoria {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idaudit")
+public class AuditoriaDTO {
     private Long idAudit;
-
-    @Column(name = "actividad", nullable = false)
     private String actividad;
-
-    @Column(name = "fecha", nullable = false)
     private Date fecha;
-
-    @Column(name = "hora", nullable = false)
     private Time hora;
-
-    @Column(name = "fechainicio")
-    private Timestamp fechaInicio;
-
-    @Column(name = "fechafin")
-    private Timestamp fechaFin;
-
-    @Column(name = "ip", nullable = false)
+    private String fechaInicio;
+    private String fechaFin;
     private String ip;
-
-    @Column(name = "admin_idadmin")
     private Integer adminId;
-
-    @Column(name = "cliente_idcliente")
     private Integer clienteId;
-
-    @Transient
     private String correo;
+
+    public AuditoriaDTO(Auditoria auditoria, String correo) {
+        this.idAudit = auditoria.getIdAudit();
+        this.actividad = auditoria.getActividad();
+        this.fecha = auditoria.getFecha();
+        this.hora = auditoria.getHora();
+        this.fechaInicio = formatDate(auditoria.getFechaInicio());
+        this.fechaFin = formatDate(auditoria.getFechaFin());
+        this.ip = auditoria.getIp();
+        this.adminId = auditoria.getAdminId();
+        this.clienteId = auditoria.getClienteId();
+        this.correo = correo;
+    }
+
+    private String formatDate(Timestamp timestamp) {
+        if (timestamp == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(timestamp);
+    }
 
     // Getters y Setters
 
@@ -75,19 +74,19 @@ public class Auditoria {
         this.hora = hora;
     }
 
-    public Timestamp getFechaInicio() {
+    public String getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Timestamp fechaInicio) {
+    public void setFechaInicio(String fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Timestamp getFechaFin() {
+    public String getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Timestamp fechaFin) {
+    public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
     }
 

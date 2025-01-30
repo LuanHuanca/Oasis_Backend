@@ -52,11 +52,10 @@ CREATE TABLE Auditoria (
     fechaInicio timestamp NULL,
     fechaFin timestamp NULL,
     ip varchar(50) NOT NULL,
-    admin_idAdmin int NOT NULL DEFAULT Null,
-    Cliente_idCliente int NOT NULL DEFAULT Null,
+    admin_idAdmin int NULL,
+    Cliente_idCliente int NULL,
     CONSTRAINT Auditoria_pk PRIMARY KEY (idAudit)
 );
-
 -- Table: Auto
 CREATE TABLE Auto (
     idAuto serial NOT NULL,
