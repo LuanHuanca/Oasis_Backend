@@ -51,13 +51,16 @@ public class AdminAPI {
         Admin admin;
         try {
             admin = adminBl.getAdminById(id);
+            if (admin == null) {
+                return new ResponseDTO("TASK-1001", "Admin no encontrado");
+            }
             LOGGER.info("Admin encontrado");
         } catch (RuntimeException e) {
-            LOGGER.error("Error al obtener el admin");
+            LOGGER.error("Error al obtener el admin", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
-        List<AdminPermiso> permisos = adminBl.getPermisosByAdminId(admin.getIdAdmin());
-        return new ResponseDTO(new AdminDTO(admin, permisos));
+        // return new ResponseDTO(new AdminDTO(admin, permisos));
+        return new ResponseDTO(admin);
     }
 
     @PostMapping("/create")
@@ -138,6 +141,26 @@ public class AdminAPI {
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
         return new ResponseDTO(adminActualizado);
+    }
+
+    // Endpoint para actualizar el rol de un admin
+    @PutMapping("/updateRole/{id}")
+    public ResponseDTO updateAdminRole(@PathVariable Long id, @RequestBody Map<String, Object> requestBody) {
+        Admin admin;
+        try {
+            admin = adminBl.getAdminById(id);
+            if (admin == null) {
+                return new ResponseDTO("TASK-1001", "Admin no encontrado");
+            }
+            Integer rolId = (Integer) requestBody.get("rolId");
+            admin.setRol(new Rol(rolId));
+            adminBl.updateAdmin(admin);
+            LOGGER.info("Rol del admin actualizado");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al actualizar el rol del admin", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+        return new ResponseDTO(admin);
     }
 
     // Endpoint para eliminar un admin

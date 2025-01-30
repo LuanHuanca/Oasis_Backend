@@ -1,30 +1,31 @@
-### Vista de todos los administradores
+### Obtener todos los admins
 GET http://localhost:9999/api/v1/admin
-Content-Type: application/json
 Accept: application/json
 
 ###
 
-### Obtener un administrador por ID
-GET http://localhost:9999/api/v1/admin/1
-Content-Type: application/json
+### Obtener un admin por su ID
+GET http://localhost:9999/api/v1/admin/4
 Accept: application/json
 
-### Crear un administrador
+###
+
+### Crear un nuevo admin
 POST http://localhost:9999/api/v1/admin/create
 Content-Type: application/json
-Accept: application/json
 
 {
-  "persona": {
-    "idPersona": 1,
-    "nombre": "Luis Angel",
-    "apellidoP": "Huanca",
-    "apellidoM": "Perez",
-    "telefono": "73037172"
+  "correo": "admin1@example.com",
+  "password": "password1",
+  "rol": {
+    "idRol": 1
   },
-  "rolId": 9
+  "persona": {
+    "idPersona": 1
+  }
 }
+
+###
 
 ### Login del administrador
 POST http://localhost:9999/api/v1/admin/login
@@ -38,21 +39,34 @@ Accept: application/json
 
 ###
 
-### Actualizar un administrador
+### Actualizar un admin
 PUT http://localhost:9999/api/v1/admin/update
 Content-Type: application/json
-Accept: application/json
 
 {
-  "idPersona": 2,
-  "correo": "Juan.Perez@oasis.bo",
-  "password": "JuanP123456789",
-  "rol": "Admin"
+  "idAdmin": 1,
+  "correo": "admin1@example.com",
+  "password": "newpassword1",
+  "rol": {
+    "idRol": 2
+  },
+  "persona": {
+    "idPersona": 1
+  }
 }
 
 ###
 
-### Eliminar un administrador
-DELETE http://localhost:9999/api/v1/admin/delete/2
+### Actualizar el rol de un admin
+PUT http://localhost:9999/api/v1/admin/updateRole/3
 Content-Type: application/json
+
+{
+  "rolId": 3
+}
+
+###
+
+### Eliminar un admin
+DELETE http://localhost:9999/api/v1/admin/delete/4
 Accept: application/json

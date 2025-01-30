@@ -12,4 +12,8 @@ public interface AdminPermisoDAO extends JpaRepository<AdminPermiso, Long> {
 
     @Query("SELECT ap FROM AdminPermiso ap WHERE ap.admin.idAdmin = :adminId")
     List<AdminPermiso> findPermisosByAdminId(Long adminId);
+
+    @Query("SELECT ap FROM AdminPermiso ap WHERE ap.admin.idAdmin = :adminId AND ap.permiso.idPermiso = :permisoId")
+    AdminPermiso findByAdminIdAndPermisoId(Long adminId, Long permisoId);
+
 }

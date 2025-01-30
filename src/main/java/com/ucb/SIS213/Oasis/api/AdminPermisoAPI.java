@@ -78,4 +78,44 @@ public class AdminPermisoAPI {
         }
         return new ResponseDTO(permisos);
     }
+
+    // Endpoint para actualizar una relación admin-permiso
+    @PutMapping("/update")
+    public ResponseDTO updateAdminPermiso(@RequestBody AdminPermiso adminPermiso) {
+        AdminPermiso adminPermisoActualizado;
+        try {
+            adminPermisoActualizado = adminPermisoBl.updateAdminPermiso(adminPermiso);
+            LOGGER.info("Relación admin-permiso actualizada");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al actualizar la relación admin-permiso", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+        return new ResponseDTO(adminPermisoActualizado);
+    }
+
+    // Endpoint para eliminar una relación admin-permiso
+    @DeleteMapping("/delete/{id}")
+    public ResponseDTO deleteAdminPermiso(@PathVariable Long id) {
+        try {
+            adminPermisoBl.deleteAdminPermiso(id);
+            LOGGER.info("Relación admin-permiso eliminada");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al eliminar la relación admin-permiso", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+        return new ResponseDTO("Relación admin-permiso eliminada");
+    }
+
+    // Endpoint para eliminar una relación admin-permiso específica
+    @DeleteMapping("/delete/{adminId}/{permisoId}")
+    public ResponseDTO deleteAdminPermiso(@PathVariable Long adminId, @PathVariable Long permisoId) {
+        try {
+            adminPermisoBl.deleteAdminPermisoByAdminIdAndPermisoId(adminId, permisoId);
+            LOGGER.info("Relación admin-permiso eliminada");
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al eliminar la relación admin-permiso", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+        return new ResponseDTO("Relación admin-permiso eliminada");
+    }
 }

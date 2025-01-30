@@ -31,4 +31,21 @@ public class AdminPermisoBl {
     public List<AdminPermiso> getPermisosByAdminId(Long adminId) {
         return adminPermisoDAO.findPermisosByAdminId(adminId);
     }
+
+    public AdminPermiso updateAdminPermiso(AdminPermiso adminPermiso) {
+        return adminPermisoDAO.save(adminPermiso);
+    }
+
+    public void deleteAdminPermiso(Long id) {
+        adminPermisoDAO.deleteById(id);
+    }
+
+    public void deleteAdminPermisoByAdminIdAndPermisoId(Long adminId, Long permisoId) {
+        AdminPermiso adminPermiso = adminPermisoDAO.findByAdminIdAndPermisoId(adminId, permisoId);
+        if (adminPermiso != null) {
+            adminPermisoDAO.delete(adminPermiso);
+        } else {
+            throw new RuntimeException("Relación admin-permiso no encontrada");
+        }
+    }
 }
