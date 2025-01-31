@@ -4,6 +4,11 @@ public class PermisoDTO {
     private Long idPermiso;
     private String permiso;
 
+    public PermisoDTO(Long idPermiso, String permiso) {
+        this.idPermiso = idPermiso;
+        this.permiso = permiso;
+    }
+
     public Long getIdPermiso() {
         return idPermiso;
     }

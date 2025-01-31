@@ -1,14 +1,18 @@
 package com.ucb.SIS213.Oasis.api;
 
 import com.ucb.SIS213.Oasis.bl.AdminPermisoBl;
+import com.ucb.SIS213.Oasis.dto.PermisoDTO;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.AdminPermiso;
+import com.ucb.SIS213.Oasis.entity.Permiso;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -78,7 +82,16 @@ public class AdminPermisoAPI {
         }
         return new ResponseDTO(permisos);
     }
-
+    // Nuevo endpoint para obtener permisos por ID de administrador
+    @GetMapping("/admin/{adminId}/permisos")
+    public ResponseDTO getOnlyPermisosbyId(@PathVariable Long adminId) {
+        List<Permiso> permisos = adminPermisoBl.findOnlyPermisosByAdminId(adminId);
+        List<PermisoDTO> permisoDTOs = permisos.stream()
+                .map(permiso -> new PermisoDTO(permiso.getIdPermiso(), permiso.getPermiso()))
+                .collect(Collectors.toList());
+        return new ResponseDTO(permisoDTOs);
+    }
+    
     // Endpoint para actualizar una relación admin-permiso
     @PutMapping("/update")
     public ResponseDTO updateAdminPermiso(@RequestBody AdminPermiso adminPermiso) {

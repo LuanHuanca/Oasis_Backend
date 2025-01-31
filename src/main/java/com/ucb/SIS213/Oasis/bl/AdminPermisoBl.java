@@ -2,6 +2,8 @@ package com.ucb.SIS213.Oasis.bl;
 
 import com.ucb.SIS213.Oasis.dao.AdminPermisoDAO;
 import com.ucb.SIS213.Oasis.entity.AdminPermiso;
+import com.ucb.SIS213.Oasis.entity.Permiso;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,4 +50,8 @@ public class AdminPermisoBl {
             throw new RuntimeException("Relación admin-permiso no encontrada");
         }
     }
+
+    public List<Permiso> findOnlyPermisosByAdminId(Long adminId) {
+        return adminPermisoDAO.findOnlyPermisosByAdminId(adminId);
+    }    
 }
