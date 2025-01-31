@@ -307,4 +307,5 @@ INSERT INTO Permiso (permiso) VALUES
 ('Registro cuentas'),
 ('ABM Usuarios'),
 ('Dashboard'),
-('Baja de comprobantes');
+('Baja de comprobantes'),
+('Agente de viajes');

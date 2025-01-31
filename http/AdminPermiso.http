@@ -16,10 +16,10 @@ Content-Type: application/json
 
 {
   "admin": {
-    "idAdmin": 3
+    "idAdmin": 1
   },
   "permiso": {
-    "idPermiso": 8
+    "idPermiso": 1
   }
 }
 
