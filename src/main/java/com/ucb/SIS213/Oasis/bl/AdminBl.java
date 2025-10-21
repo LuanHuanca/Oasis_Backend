@@ -40,11 +40,9 @@ public class AdminBl {
     }
 
     public Admin createAdmin(Admin admin) {
-        System.out.println("Contraseña : " + admin.getPassword());
         String password = admin.getPassword();
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         admin.setPassword(hashedPassword);
-        System.out.println("Contraseña: " + admin.getPassword());
         return adminDao.save(admin);
     }
 
@@ -59,8 +57,10 @@ public class AdminBl {
         // Obtener la contraseña almacenada del cliente
         String hashedPassword = admin.getPassword();
 
+        String mypassword = password +"Aqm,24Dla";
+
         // Verificar si la contraseña proporcionada coincide con la contraseña almacenada después de ser hasheada
-        if (!bCryptPasswordEncoder.matches(password, hashedPassword)) {
+        if (!bCryptPasswordEncoder.matches(mypassword, hashedPassword)) {
             throw new UserException("Correo o contraseña incorrectos");
         }
 

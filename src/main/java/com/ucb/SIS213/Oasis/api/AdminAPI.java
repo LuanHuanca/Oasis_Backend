@@ -73,10 +73,10 @@ public class AdminAPI {
         Long idPersona = persona.getIdPersona();
 
         // Crear correo de admin
-        String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@oasis.bo";
+        String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@tuguia.bo";
 
         // Crear contraseña de admin
-        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono();
+        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono() + "Aqm,24Dla";
 
         // Recuperar Rol
         Integer rolId = (Integer) requestBody.get("rolId");

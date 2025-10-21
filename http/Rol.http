@@ -15,7 +15,7 @@ POST http://localhost:9999/api/v1/rol/create
 Content-Type: application/json
 
 {
-  "rol": "usuario"
+  "rol": "usuario2"
 }
 
 ###
@@ -32,5 +32,5 @@ Content-Type: application/json
 ###
 
 ### Eliminar un rol
-DELETE http://localhost:9999/api/v1/rol/delete/1
+DELETE http://localhost:9999/api/v1/rol/delete/18
 Accept: application/json

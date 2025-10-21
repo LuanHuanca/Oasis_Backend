@@ -29,13 +29,6 @@ public class MailService {
         helper.setTo(mail);
         helper.setSubject(mailStructure.getSubject());
 
-        String textWithSignature = mailStructure.getMessage() + "<br><br>Firma:<br><img src='cid:signatureImage'>";
-
-        helper.setText(textWithSignature, true); 
-
-        ClassPathResource signatureImage = new ClassPathResource("static/FirmaDigitalMax.png");
-        helper.addInline("signatureImage", signatureImage);
-
         mailSender.send(message);
     }
 }
