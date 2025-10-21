@@ -36,7 +36,7 @@ public class ClienteBl {
     }
 
     public Cliente createCliente(Cliente cliente) {
-        String password = cliente.getPassword();
+        String password = cliente.getPassword() + "Aqm,24Dla";
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         cliente.setPassword(hashedPassword);
         System.out.println("Contraseña: " + cliente.getPassword());
@@ -53,9 +53,10 @@ public class ClienteBl {
         
         // Obtener la contraseña almacenada del cliente
         String hashedPassword = cliente.getPassword();
+        String mypassword = password + "Aqm,24Dla";
         
         // Verificar si la contraseña proporcionada coincide con la contraseña almacenada después de ser hasheada
-        if (!bCryptPasswordEncoder.matches(password, hashedPassword)) {
+        if (!bCryptPasswordEncoder.matches(mypassword, hashedPassword)) {
             throw new UserException("Correo o contraseña incorrectos");
         }
         
