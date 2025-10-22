@@ -1,13 +1,11 @@
 package com.ucb.SIS213.Oasis.api;
 
 import com.ucb.SIS213.Oasis.bl.AdminBl;
-import com.ucb.SIS213.Oasis.dto.AdminDTO;
 import com.ucb.SIS213.Oasis.dto.LoginRequestDTO;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Admin;
 import com.ucb.SIS213.Oasis.entity.Persona;
 import com.ucb.SIS213.Oasis.entity.Rol;
-import com.ucb.SIS213.Oasis.entity.AdminPermiso;
 import com.ucb.SIS213.Oasis.exep.UserException;
 
 import org.springframework.beans.factory.annotation.Autowired;

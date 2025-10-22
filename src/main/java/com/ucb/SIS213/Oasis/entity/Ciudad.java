@@ -12,7 +12,7 @@ public class Ciudad {
     CREATE TABLE Ciudad (
         idCiudad serial  NOT NULL,
         ciudad varchar(45)  NOT NULL,
-        Pais_idPais int  NOT NULL,
+        Pais_idPais int  NOT NULL, foreign key (Pais_idPais) references Pais(idPais),
         CONSTRAINT Ciudad_pk PRIMARY KEY (idCiudad)
     );
      */

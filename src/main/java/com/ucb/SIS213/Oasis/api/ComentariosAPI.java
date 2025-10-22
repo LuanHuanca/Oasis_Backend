@@ -3,7 +3,6 @@ package com.ucb.SIS213.Oasis.api;
 import com.ucb.SIS213.Oasis.bl.ComentariosBl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ucb.SIS213.Oasis.bl.ComentariosBl;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Comentarios;
 

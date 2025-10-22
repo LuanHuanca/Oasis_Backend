@@ -90,3 +90,6 @@ public class HotelAPI {
         return new ResponseDTO("Hotel deleted");
     }
 }
+
+
+// Esto es un comentario para verificar el cambio en el archivo

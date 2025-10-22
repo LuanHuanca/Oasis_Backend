@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import com.ucb.SIS213.Oasis.bl.VueloBl;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Vuelo;
-import com.ucb.SIS213.Oasis.exep.UserException;
+
 
 import java.util.List;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
 @CrossOrigin(origins = "*",maxAge = 3600)
