@@ -7,7 +7,7 @@ public class ClienteDTO {
     private Long idCliente;
     private String correo;
     private String password;
-    private String estadoCuenta;
+    private Boolean estadoCuenta;
     private Long idPersona;
 
     private String nombre;
@@ -42,11 +42,11 @@ public class ClienteDTO {
         this.password = password;
     }
 
-    public String getEstadoCuenta() {
+    public Boolean getEstadoCuenta() {
         return estadoCuenta;
     }
 
-    public void setEstadoCuenta(String estadoCuenta) {
+    public void setEstadoCuenta(Boolean estadoCuenta) {
         this.estadoCuenta = estadoCuenta;
     }
 

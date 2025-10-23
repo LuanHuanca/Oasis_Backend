@@ -29,7 +29,7 @@ public class Cliente {
     private String password;
 
     @Column(name = "estadocuenta")
-    private String estadoCuenta;
+    private Boolean estadoCuenta;
 
 
     @Column(name = "Persona_idpersona")
@@ -61,11 +61,11 @@ public class Cliente {
         this.password = password;
     }
 
-    public String getEstadoCuenta() {
+    public Boolean getEstadoCuenta() {
         return estadoCuenta;
     }
 
-    public void setEstadoCuenta(String estadoCuenta) {
+    public void setEstadoCuenta(Boolean estadoCuenta) {
         this.estadoCuenta = estadoCuenta;
     }
 
@@ -85,7 +85,7 @@ public class Cliente {
                 "idCliente=" + idCliente +
                 ", correo='" + correo + '\'' +
                 ", password='" + password + '\'' +
-                ", estadoCuenta='" + estadoCuenta + '\'' +
+                ", estadoCuenta=" + estadoCuenta +
                 ", persona=" + idPersona +
                 '}';
     }

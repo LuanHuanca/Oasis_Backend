@@ -93,7 +93,7 @@ public class ClienteAPI {
             ClienteDTO cliente = new ClienteDTO();
             cliente.setIdCliente(rs.getLong("idcliente"));
             cliente.setCorreo(rs.getString("correo"));
-            cliente.setEstadoCuenta(rs.getString("estadocuenta"));
+            cliente.setEstadoCuenta(rs.getBoolean("estadocuenta"));
             cliente.setIdPersona(rs.getLong("persona_idpersona"));
 
             cliente.setNombre(rs.getString("nombre"));

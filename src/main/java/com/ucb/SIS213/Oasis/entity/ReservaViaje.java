@@ -7,7 +7,7 @@ public class ReservaViaje {
     private Long cliente_idCliente;
     private String cliente_correo;
     private String cliente_password;
-    private String cliente_estadoCuenta;
+    private Boolean cliente_estadoCuenta;
     private Long persona_idPersona;
     private String persona_Nombre;
     private String persona_ApellidoP;
