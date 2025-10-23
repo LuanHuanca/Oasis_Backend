@@ -14,6 +14,7 @@ CREATE TABLE Actividad (
     CONSTRAINT Actividad_pk PRIMARY KEY (idActividad)
 );
 
+
 -- Table: Aerolinea
 CREATE TABLE Aerolinea (
     idAerolinea serial NOT NULL,
@@ -474,3 +475,18 @@ ALTER TABLE admin ADD CONSTRAINT admin_Persona
 ;
 
 -- End of file.
+
+SELECT 
+    conname AS constraint_name,
+    conrelid::regclass AS table_name,
+    a.attname AS column_name,
+    cl.relname AS referenced_table_name,
+    a2.attname AS referenced_column_name
+FROM 
+    pg_constraint AS c
+    JOIN pg_attribute AS a ON a.attnum = ANY(c.conkey)
+    JOIN pg_class AS cl ON cl.oid = c.confrelid
+    JOIN pg_attribute AS a2 ON a2.attnum = ANY(c.confkey)
+WHERE 
+    c.contype = 'f';  -- Solo claves foráneas
+--PRUEBA DB
