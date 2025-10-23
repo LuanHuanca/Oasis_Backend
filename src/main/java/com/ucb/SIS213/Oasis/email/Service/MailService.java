@@ -29,6 +29,9 @@ public class MailService {
         helper.setTo(mail);
         helper.setSubject(mailStructure.getSubject());
 
+        helper.setText(mailStructure.getMessage(), false);
+
+
         mailSender.send(message);
     }
 }
