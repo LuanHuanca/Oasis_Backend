@@ -2,7 +2,7 @@ package com.ucb.SIS213.Oasis.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+
 
 @Entity
 @Table(name = "Comentarios")
