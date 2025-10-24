@@ -248,6 +248,17 @@ CREATE TABLE AdminPermiso (
     CONSTRAINT AdminPermiso_Permiso_fk FOREIGN KEY (permiso_idPermiso) REFERENCES Permiso (idPermiso)
 );
 
+-- Table: RolPermiso
+CREATE TABLE RolPermiso (
+    idRolPermiso serial NOT NULL,
+    rol_idRol int NOT NULL,
+    permiso_idPermiso int NOT NULL,
+    CONSTRAINT RolPermiso_pk PRIMARY KEY (idRolPermiso),
+    CONSTRAINT RolPermiso_Rol_fk FOREIGN KEY (rol_idRol) REFERENCES Rol (idRol),
+    CONSTRAINT RolPermiso_Permiso_fk FOREIGN KEY (permiso_idPermiso) REFERENCES Permiso (idPermiso),
+    CONSTRAINT RolPermiso_unique UNIQUE (rol_idRol, permiso_idPermiso)
+);
+
 -- foreign keys
 -- Reference: Actividad_CategoriaActividad (table: Actividad)
 ALTER TABLE Actividad ADD CONSTRAINT Actividad_CategoriaActividad
