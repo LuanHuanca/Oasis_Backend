@@ -474,3 +474,84 @@ ALTER TABLE admin ADD CONSTRAINT admin_Persona
 ;
 
 -- End of file.
+
+SELECT
+    conname AS constraint_name,
+    conrelid::regclass AS table_name,
+    a.attname AS column_name,
+    cl.relname AS referenced_table_name,
+    a2.attname AS referenced_column_name
+FROM
+    pg_constraint AS c
+    JOIN pg_attribute AS a ON a.attnum = ANY(c.conkey)
+    JOIN pg_class AS cl ON cl.oid = c.confrelid
+    JOIN pg_attribute AS a2 ON a2.attnum = ANY(c.confkey)
+WHERE
+    c.contype = 'f';  -- Solo claves foráneas
+--nothing changed
+
+
+
+
+
+SELECT
+    conname AS constraint_name,
+    conrelid::regclass AS table_name,
+    a.attname AS column_name,
+    cl.relname AS referenced_table_name,
+    a2.attname AS referenced_column_name
+FROM
+    pg_constraint AS c
+    JOIN pg_attribute AS a ON a.attnum = ANY(c.conkey)
+    JOIN pg_class AS cl ON cl.oid = c.confrelid
+    JOIN pg_attribute AS a2 ON a2.attnum = ANY(c.confkey)
+WHERE
+    c.contype = 'f';  -- Solo claves foráneas
+
+
+SELECT * FROM Vuelo LIMIT 10;
+
+
+-- Nueva tabla: RolPermiso
+CREATE TABLE RolPermiso (
+    idRolPermiso serial PRIMARY KEY,
+    rol_idRol int NOT NULL,
+    permiso_idPermiso int NOT NULL,
+    CONSTRAINT RolPermiso_Rol_fk FOREIGN KEY (rol_idRol)
+        REFERENCES Rol (idRol),
+    CONSTRAINT RolPermiso_Permiso_fk FOREIGN KEY (permiso_idPermiso)
+        REFERENCES Permiso (idPermiso)
+);
+
+
+-- Ejemplos de permisos por defecto para roles
+INSERT INTO RolPermiso (rol_idRol, permiso_idPermiso)
+VALUES
+-- Rol 1: Autorizador
+(1, 3),  -- "Administrador de permisos"
+
+-- Rol 2: Contador
+(2, 5),  -- "Gestión de contabilidad"
+(2, 6);  -- "Gestión de presupuesto"
+
+
+--sec part
+ALTER TABLE "Permiso" ADD COLUMN descripcion varchar(255);
+
+-- Lista todas las tablas del esquema public
+SELECT tablename
+FROM pg_tables
+WHERE schemaname = 'public'
+ORDER BY tablename;
+
+ALTER TABLE permiso ADD COLUMN descripcion varchar(255);
+
+
+-- Ver las columnas de la tabla permiso
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'permiso'
+ORDER BY ordinal_position;
+
+-- O hacer un SELECT simple
+SELECT * FROM permiso LIMIT 1;
