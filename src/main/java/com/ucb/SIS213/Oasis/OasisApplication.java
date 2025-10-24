@@ -9,5 +9,4 @@ public class OasisApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OasisApplication.class, args);
 	}
-
 }

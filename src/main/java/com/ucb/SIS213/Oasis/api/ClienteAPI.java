@@ -42,6 +42,23 @@ public class ClienteAPI {
         return new ResponseDTO(clienteList);
     }
 
+    // Endpoint para obtener un cliente por su correo
+    @GetMapping("/correo/{correo}")
+    public ResponseDTO getClienteByCorreo(@PathVariable String correo) {
+        try {
+            Cliente cliente = clienteBl.getClienteByCorreo(correo);
+            if (cliente == null) {
+                return new ResponseDTO("TASK-1001", "Cliente no encontrado con ese correo");
+            }
+            return new ResponseDTO(cliente);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al obtener cliente por correo", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+    }
+
+
+
     // Endpoint para obtener un cliente por su id
     @GetMapping("/{id}")
     public ResponseDTO getClienteById(@PathVariable Long id) {
@@ -133,4 +150,21 @@ public class ClienteAPI {
         }
         return new ResponseDTO("Cliente eliminado");
     }
+
+    // Endpoint para cambiar solo la contraseña
+    @PutMapping("/{id}/password")
+    public ResponseDTO updatePassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            String newPassword = body.get("password");
+            if (newPassword == null || newPassword.isBlank()) {
+                return new ResponseDTO("TASK-1002", "La contraseña no puede estar vacía");
+            }
+            Cliente clienteActualizado = clienteBl.updatePassword(id, newPassword);
+            return new ResponseDTO(clienteActualizado);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al actualizar la contraseña", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+    }
+
 }

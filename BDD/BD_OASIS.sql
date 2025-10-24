@@ -104,6 +104,24 @@ CREATE TABLE Cliente (
     CONSTRAINT Cliente_pk PRIMARY KEY (idCliente)
 );
 
+ALTER TABLE Cliente
+  ADD COLUMN estadoCuenta_tmp boolean;
+
+UPDATE Cliente
+  SET estadoCuenta_tmp = CASE
+      WHEN LOWER(estadoCuenta) IN ('activo', 'true', '1') THEN true
+      ELSE false
+  END;
+
+ALTER TABLE Cliente
+  DROP COLUMN estadoCuenta;
+
+ALTER TABLE Cliente
+  RENAME COLUMN estadoCuenta_tmp TO estadoCuenta;
+
+
+
+
 -- Table: Comentarios
 CREATE TABLE Comentarios (
     idComentario serial NOT NULL,
@@ -473,4 +491,19 @@ ALTER TABLE admin ADD CONSTRAINT admin_Persona
             INITIALLY IMMEDIATE
 ;
 
+CREATE TABLE HistorialContrasena (
+    idHistorial serial NOT NULL,
+    idCliente int NOT NULL,
+    contrasena_hash varchar(255) NOT NULL,
+    fecha_cambio timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT HistorialContrasena_pk PRIMARY KEY (idHistorial),
+    CONSTRAINT HistorialContrasena_Cliente_fk FOREIGN KEY (idCliente)
+        REFERENCES Cliente (idCliente)
+        ON DELETE CASCADE
+);
+
+ALTER TABLE HistorialContrasena
+ADD COLUMN idAdmin int NULL;
+
 -- End of file.
+

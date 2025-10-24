@@ -16,7 +16,7 @@ Accept: application/json
 {
     "correo": "Juan@asasd",
     "password": "Perez",
-    "estadoCuenta": "Activo",
+    "estadoCuenta": true,
     "idPersona": 1
 }
 
@@ -38,7 +38,7 @@ Accept: application/json
 {
     "correo": "Juan@asasdsss",
     "password": "Perezzzz",
-    "estadoCuenta": "Activo",
+    "estadoCuenta": true,
     "idPersona": 1
 }
 

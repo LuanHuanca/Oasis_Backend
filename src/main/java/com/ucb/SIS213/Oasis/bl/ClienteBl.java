@@ -31,6 +31,14 @@ public class ClienteBl {
         return clienteDao.findAll();
     }
 
+    public Cliente getClienteByCorreo(String correo) {
+        Cliente cliente = clienteDao.findByCorreo(correo);
+        if (cliente == null) {
+            throw new RuntimeException("Cliente no encontrado");
+        }
+        return cliente;
+    }
+
     public Cliente getClienteById(Long id) {
         Cliente cliente = clienteDao.findById(id).orElse(null);
         if (cliente == null) {
@@ -114,6 +122,42 @@ public class ClienteBl {
 
         return clienteDao.save(clienteActual);
     }
+
+    public Cliente updatePassword(Long id, String newPasswordRaw) {
+        Cliente clienteActual = clienteDao.findById(id).orElse(null);
+        if (clienteActual == null) {
+            throw new RuntimeException("Cliente no existe");
+        }
+
+        String saltedNew = newPasswordRaw + "Aqm,24Dla";
+
+        // Validar contra contraseña actual
+        if (bCryptPasswordEncoder.matches(saltedNew, clienteActual.getPassword())) {
+            throw new RuntimeException("La nueva contraseña no puede ser igual a la actual");
+        }
+
+        // Validar historial (últimas 5 contraseñas)
+        int checkLast = 5;
+        List<HistorialContrasena> history = historialService.findHistoryForCliente(clienteActual.getIdCliente());
+        int compared = 0;
+        for (HistorialContrasena h : history) {
+            if (compared >= checkLast) break;
+            if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
+                throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
+            }
+            compared++;
+        }
+
+        // Guardar contraseña actual en historial
+        historialService.saveHistory(clienteActual.getIdCliente(), clienteActual.getPassword());
+
+        // Hashear y actualizar
+        String hashed = bCryptPasswordEncoder.encode(saltedNew);
+        clienteActual.setPassword(hashed);
+
+        return clienteDao.save(clienteActual);
+    }
+
 
 
     public void deleteCliente (Long id) {
