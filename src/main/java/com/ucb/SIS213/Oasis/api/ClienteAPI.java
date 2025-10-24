@@ -1,6 +1,9 @@
 package com.ucb.SIS213.Oasis.api;
 
 import java.util.List;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.ucb.SIS213.Oasis.dto.ClienteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +131,7 @@ public class ClienteAPI {
     @PutMapping("/update/{id}")
     public ResponseDTO updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         Cliente clienteActualizado;
+        
         try{
             clienteActualizado = clienteBl.updateCliente(id, cliente);
             LOGGER.info("Cliente actualizado");
@@ -154,6 +158,7 @@ public class ClienteAPI {
     // Endpoint para cambiar solo la contraseña
     @PutMapping("/{id}/password")
     public ResponseDTO updatePassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
+
         try {
             String newPassword = body.get("password");
             if (newPassword == null || newPassword.isBlank()) {
