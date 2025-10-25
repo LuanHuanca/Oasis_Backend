@@ -115,12 +115,10 @@ public class ClienteAPI {
             cliente.setCorreo(rs.getString("correo"));
             cliente.setEstadoCuenta(rs.getBoolean("estadocuenta"));
             cliente.setIdPersona(rs.getLong("persona_idpersona"));
-
             cliente.setNombre(rs.getString("nombre"));
             cliente.setApellidoP(rs.getString("apellidop"));
             cliente.setApellidoM(rs.getString("apellidom"));
             cliente.setTelefono(rs.getString("telefono"));
-
             return cliente;
         });
 

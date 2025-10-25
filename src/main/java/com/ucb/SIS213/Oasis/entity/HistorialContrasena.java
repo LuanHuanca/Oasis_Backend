@@ -4,18 +4,18 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "HistorialContrasena")
+@Table(name = "historialcontrasena")
 public class HistorialContrasena {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idHistorial")
+    @Column(name = "idhistorial")
     private Long idHistorial;
 
-    @Column(name = "idCliente")
+    @Column(name = "idcliente")
     private Long idCliente;
 
-    @Column(name = "idAdmin")
+    @Column(name = "idadmin")
     private Long idAdmin;
 
     @Column(name = "contrasena_hash")
@@ -63,4 +63,5 @@ public class HistorialContrasena {
     public void setFechaCambio(LocalDateTime fechaCambio) {
         this.fechaCambio = fechaCambio;
     }
+
 }

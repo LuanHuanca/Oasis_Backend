@@ -89,4 +89,7 @@ public class Cliente {
                 ", persona=" + idPersona +
                 '}';
     }
+
+
+    
 }
