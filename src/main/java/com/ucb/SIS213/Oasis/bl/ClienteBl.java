@@ -78,50 +78,27 @@ public class ClienteBl {
         return cliente;
     }
     
-
-    public Cliente updateCliente(Long id,Cliente cliente) {
+    public Cliente updateCliente(Long id, Cliente cliente) {
         Cliente clienteActual = clienteDao.findById(id).orElse(null);
-        if (clienteActual == null) {
+            if (clienteActual == null) {
             throw new RuntimeException("Cliente does not exist");
         }
+
         clienteActual.setCorreo(cliente.getCorreo());
         clienteActual.setEstadoCuenta(cliente.getEstadoCuenta());
         clienteActual.setIdPersona(cliente.getIdPersona());
 
-        // If password is being updated, enforce history and save old hash
-        String newPasswordRaw = cliente.getPassword();
-        if (newPasswordRaw != null && !newPasswordRaw.isBlank()) {
-            // Build salted password consistent with createCliente
-            String saltedNew = newPasswordRaw + "Aqm,24Dla";
-
-            // Check against last N password hashes
-            int checkLast = 5; // configurable: number of previous passwords to check
-            java.util.List<HistorialContrasena> history = historialService.findHistoryForCliente(clienteActual.getIdCliente());
-
-            // Also include current password in the checks (can't reuse current one)
-            if (bCryptPasswordEncoder.matches(saltedNew, clienteActual.getPassword())) {
-                throw new RuntimeException("La nueva contraseña no puede ser igual a la actual");
-            }
-
-            int compared = 0;
-            for (HistorialContrasena h : history) {
-                if (compared >= checkLast) break;
-                if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
-                    throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
-                }
-                compared++;
-            }
-
-            // Save current password hash to history before changing
-            historialService.saveHistory(clienteActual.getIdCliente(), clienteActual.getPassword());
-
-            // Hash and set new password
-            String hashed = bCryptPasswordEncoder.encode(saltedNew);
+        // Actualizar contraseña si se envía una nueva
+        if (cliente.getPassword() != null && !cliente.getPassword().isBlank()) {
+            String salted = cliente.getPassword() + "Aqm,24Dla";
+            String hashed = bCryptPasswordEncoder.encode(salted);
             clienteActual.setPassword(hashed);
         }
 
         return clienteDao.save(clienteActual);
+
     }
+
 
     public Cliente updatePassword(Long id, String newPasswordRaw) {
         Cliente clienteActual = clienteDao.findById(id).orElse(null);
@@ -138,7 +115,7 @@ public class ClienteBl {
 
         // Validar historial (últimas 5 contraseñas)
         int checkLast = 5;
-        List<HistorialContrasena> history = historialService.findHistoryForCliente(clienteActual.getIdCliente());
+        List<HistorialContrasena> history = historialService.findHistoryForPersona(clienteActual.getIdPersona());
         int compared = 0;
         for (HistorialContrasena h : history) {
             if (compared >= checkLast) break;
@@ -149,14 +126,16 @@ public class ClienteBl {
         }
 
         // Guardar contraseña actual en historial
-        historialService.saveHistory(clienteActual.getIdCliente(), clienteActual.getPassword());
+        historialService.saveHistory(clienteActual.getIdPersona(), clienteActual.getPassword());
 
         // Hashear y actualizar
         String hashed = bCryptPasswordEncoder.encode(saltedNew);
         clienteActual.setPassword(hashed);
 
         return clienteDao.save(clienteActual);
+
     }
+
 
 
 

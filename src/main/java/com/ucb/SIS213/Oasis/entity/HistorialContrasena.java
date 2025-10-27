@@ -12,18 +12,16 @@ public class HistorialContrasena {
     @Column(name = "idhistorial")
     private Long idHistorial;
 
-    @Column(name = "idcliente")
-    private Long idCliente;
+    @Column(name = "idpersona", nullable = false)
+    private Long idPersona;
 
-    @Column(name = "idadmin")
-    private Long idAdmin;
-
-    @Column(name = "contrasena_hash")
+    @Column(name = "contrasena_hash", nullable = false)
     private String contrasenaHash;
 
-    @Column(name = "fecha_cambio")
+    @Column(name = "fecha_cambio", nullable = false)
     private LocalDateTime fechaCambio;
 
+    // Getters y setters
     public Long getIdHistorial() {
         return idHistorial;
     }
@@ -32,20 +30,12 @@ public class HistorialContrasena {
         this.idHistorial = idHistorial;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
+    public Long getIdPersona() {
+        return idPersona;
     }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public Long getIdAdmin() {
-        return idAdmin;
-    }
-
-    public void setIdAdmin(Long idAdmin) {
-        this.idAdmin = idAdmin;
+    public void setIdPersona(Long idPersona) {
+        this.idPersona = idPersona;
     }
 
     public String getContrasenaHash() {
@@ -63,5 +53,4 @@ public class HistorialContrasena {
     public void setFechaCambio(LocalDateTime fechaCambio) {
         this.fechaCambio = fechaCambio;
     }
-
 }

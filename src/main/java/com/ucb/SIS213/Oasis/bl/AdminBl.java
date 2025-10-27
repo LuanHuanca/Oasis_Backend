@@ -8,6 +8,8 @@ import com.ucb.SIS213.Oasis.dao.AdminDao;
 import com.ucb.SIS213.Oasis.dao.AdminPermisoDAO;
 import com.ucb.SIS213.Oasis.entity.Admin;
 import com.ucb.SIS213.Oasis.entity.AdminPermiso;
+import com.ucb.SIS213.Oasis.entity.Cliente;
+import com.ucb.SIS213.Oasis.entity.HistorialContrasena;
 
 import java.util.List;
 
@@ -79,39 +81,17 @@ public class AdminBl {
     public Admin updateAdmin(Admin admin) {
         Admin adminExistente = adminDao.findById(admin.getIdAdmin()).orElse(null);
         if (adminExistente == null) {
-            throw new RuntimeException("Admin does not exist");
+        throw new RuntimeException("Admin does not exist");
         }
-        // If password is being updated, enforce history and save old hash
+
+        // Si se está actualizando la contraseña
         String newPasswordRaw = admin.getPassword();
         if (newPasswordRaw != null && !newPasswordRaw.isBlank()) {
             String saltedNew = newPasswordRaw + "Aqm,24Dla";
-
-            // Check current password
-            if (bCryptPasswordEncoder.matches(saltedNew, adminExistente.getPassword())) {
-                throw new RuntimeException("La nueva contraseña no puede ser igual a la actual");
-            }
-
-            int checkLast = 5;
-            java.util.List<com.ucb.SIS213.Oasis.entity.HistorialContrasena> history = historialService.findHistoryForAdmin(adminExistente.getIdAdmin());
-
-            int compared = 0;
-            for (com.ucb.SIS213.Oasis.entity.HistorialContrasena h : history) {
-                if (compared >= checkLast) break;
-                if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
-                    throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
-                }
-                compared++;
-            }
-
-            // Save current password hash to history before changing
-            historialService.saveHistoryForAdmin(adminExistente.getIdAdmin(), adminExistente.getPassword());
-
-            // Hash and set new password
             String hashed = bCryptPasswordEncoder.encode(saltedNew);
             adminExistente.setPassword(hashed);
         }
-
-        // update other fields
+        // Actualizar otros campos
         adminExistente.setCorreo(admin.getCorreo());
         adminExistente.setIdPersona(admin.getIdPersona());
         adminExistente.setRol(admin.getRol());
@@ -119,14 +99,48 @@ public class AdminBl {
         return adminDao.save(adminExistente);
     }
 
-    public void deleteAdmin(Long id) {
 
+    public Admin updatePassword(Long id, String newPasswordRaw) {
+        Admin adminActual = adminDao.findById(id).orElse(null);
+        if (adminActual == null) {
+            throw new RuntimeException("Admin no existe");
+        }
+
+        String saltedNew = newPasswordRaw + "Aqm,24Dla";
+
+        // Validar contra contraseña actual
+        if (bCryptPasswordEncoder.matches(saltedNew, adminActual.getPassword())) {
+            throw new RuntimeException("La nueva contraseña no puede ser igual a la actual");
+        }
+
+        // Validar historial (últimas 5 contraseñas)
+        int checkLast = 5;
+        List<HistorialContrasena> history = historialService.findHistoryForPersona(adminActual.getIdPersona());
+        int compared = 0;
+        for (HistorialContrasena h : history) {
+            if (compared >= checkLast) break;
+            if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
+                throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
+            }
+            compared++;
+        }
+
+        // Guardar contraseña actual en historial
+        historialService.saveHistory(adminActual.getIdPersona(), adminActual.getPassword());
+
+        // Hashear y actualizar
+        String hashed = bCryptPasswordEncoder.encode(saltedNew);
+        adminActual.setPassword(hashed);
+
+        return adminDao.save(adminActual);
+    }
+
+    public void deleteAdmin(Long id) {
         if (adminDao.existsById(id)) {
             throw new RuntimeException("Admin does not exist");
         }
         adminDao.deleteById(id);
     }
-
     public List<AdminPermiso> getPermisosByAdminId(Long adminId) {
         return adminPermisoBl.getPermisosByAdminId(adminId);
     }

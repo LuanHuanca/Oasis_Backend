@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface HistorialContrasenaRepository extends JpaRepository<HistorialContrasena, Long> {
-    List<HistorialContrasena> findByIdClienteOrderByFechaCambioDesc(Long idCliente);
-    List<HistorialContrasena> findByIdAdminOrderByFechaCambioDesc(Long idAdmin);
+    List<HistorialContrasena> findByIdPersonaOrderByFechaCambioDesc(Long idPersona);
 }
