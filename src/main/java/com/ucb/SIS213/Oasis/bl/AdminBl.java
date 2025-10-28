@@ -22,7 +22,7 @@ public class AdminBl {
 
 
     @Autowired
-    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, AdminPermisoDAO rolPermisoDao, HistorialContrasenaService historialService) {
+    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, AdminPermisoDAO adminPermisoDao, HistorialContrasenaService historialService) {
         this.adminDao = adminDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminPermisoDao = adminPermisoDao;
@@ -129,6 +129,63 @@ public class AdminBl {
 
     public List<AdminPermiso> getPermisosByAdminId(Long adminId) {
         return adminPermisoBl.getPermisosByAdminId(adminId);
+    }
+
+    /**
+     * Cambia la contraseña de un administrador específico
+     * @param id ID del administrador
+     * @param newPasswordRaw Nueva contraseña en texto plano
+     * @return Admin actualizado
+     */
+    public Admin updatePassword(Long id, String newPasswordRaw) {
+        Admin adminActual = adminDao.findById(id).orElse(null);
+        if (adminActual == null) {
+            throw new RuntimeException("Administrador no existe");
+        }
+
+        String saltedNew = newPasswordRaw + "Aqm,24Dla";
+
+        // Validar contra contraseña actual
+        if (bCryptPasswordEncoder.matches(saltedNew, adminActual.getPassword())) {
+            throw new RuntimeException("La nueva contraseña no puede ser igual a la actual");
+        }
+
+        // Validar historial (últimas 5 contraseñas)
+        int checkLast = 5;
+        List<com.ucb.SIS213.Oasis.entity.HistorialContrasena> history = historialService.findHistoryForAdmin(adminActual.getIdAdmin());
+        int compared = 0;
+        for (com.ucb.SIS213.Oasis.entity.HistorialContrasena h : history) {
+            if (compared >= checkLast) break;
+            if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
+                throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
+            }
+            compared++;
+        }
+
+        // Guardar contraseña actual en historial
+        historialService.saveHistoryForAdmin(adminActual.getIdAdmin(), adminActual.getPassword());
+
+        // Hashear y actualizar
+        String hashed = bCryptPasswordEncoder.encode(saltedNew);
+        adminActual.setPassword(hashed);
+
+        return adminDao.save(adminActual);
+    }
+
+    /**
+     * Valida la contraseña actual de un administrador
+     * @param id ID del administrador
+     * @param currentPassword Contraseña actual en texto plano
+     * @return true si la contraseña es correcta, false en caso contrario
+     */
+    public boolean validateCurrentPassword(Long id, String currentPassword) {
+        Admin admin = adminDao.findById(id).orElse(null);
+        if (admin == null) {
+            throw new RuntimeException("Administrador no existe");
+        }
+
+        String saltedCurrent = currentPassword + "Aqm,24Dla";
+        return bCryptPasswordEncoder.matches(saltedCurrent, admin.getPassword());
     }
 
 }

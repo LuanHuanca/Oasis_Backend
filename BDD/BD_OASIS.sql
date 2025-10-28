@@ -491,19 +491,25 @@ ALTER TABLE admin ADD CONSTRAINT admin_Persona
             INITIALLY IMMEDIATE
 ;
 
+-- Table: HistorialContrasena
 CREATE TABLE HistorialContrasena (
     idHistorial serial NOT NULL,
-    idCliente int NOT NULL,
+    idCliente int NULL,
+    idAdmin int NULL,
     contrasena_hash varchar(255) NOT NULL,
     fecha_cambio timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT HistorialContrasena_pk PRIMARY KEY (idHistorial),
     CONSTRAINT HistorialContrasena_Cliente_fk FOREIGN KEY (idCliente)
         REFERENCES Cliente (idCliente)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT HistorialContrasena_Admin_fk FOREIGN KEY (idAdmin)
+        REFERENCES admin (idadmin)
+        ON DELETE CASCADE,
+    CONSTRAINT HistorialContrasena_check_user CHECK (
+        (idCliente IS NOT NULL AND idAdmin IS NULL) OR 
+        (idCliente IS NULL AND idAdmin IS NOT NULL)
+    )
 );
-
-ALTER TABLE HistorialContrasena
-ADD COLUMN idAdmin int NULL;
 
 -- End of file.
 

@@ -1,0 +1,103 @@
+### ============================================
+### EJEMPLOS DE USO DEL SISTEMA DE CONTRASEÑAS
+### ============================================
+
+### 1. CAMBIO DE CONTRASEÑA PARA CLIENTE
+### Este endpoint cambia directamente la contraseña del cliente
+PUT http://localhost:9999/api/v1/cliente/1/password
+Content-Type: application/json
+
+{
+    "password": "Luan123456789.1"
+}
+
+### 2. CAMBIO DE CONTRASEÑA PARA ADMINISTRADOR
+### Este endpoint cambia directamente la contraseña del admin
+PUT http://localhost:9999/api/v1/admin/1/password
+Content-Type: application/json
+
+{
+    "password": "nuevaContrasenaAdmin123"
+}
+
+### 3. VALIDAR CONTRASEÑA ACTUAL DE CLIENTE
+### Este endpoint SOLO verifica si la contraseña actual es correcta
+### Útil para confirmar la identidad antes de hacer cambios
+POST http://localhost:9999/api/v1/cliente/1/validate-password
+Content-Type: application/json
+
+{
+    "password": "Luan123456789."
+}
+
+### 4. VALIDAR CONTRASEÑA ACTUAL DE ADMINISTRADOR
+### Este endpoint SOLO verifica si la contraseña actual es correcta
+### Útil para confirmar la identidad antes de hacer cambios
+POST http://localhost:9999/api/v1/admin/1/validate-password
+Content-Type: application/json
+nuevaContrasenaAdmin123
+{
+    "password": "nuevaContrasenaAdmin123"
+}
+
+### 5. FLUJO COMPLETO: Validar + Cambiar contraseña de Cliente
+### Paso 1: Validar contraseña actual del cliente
+POST http://localhost:9999/api/v1/cliente/1/validate-password
+Content-Type: application/json
+
+{
+    "password": "Luan123456789."
+}
+
+### Paso 2: Si la validación es exitosa (respuesta: true), entonces cambiar
+PUT http://localhost:9999/api/v1/cliente/1/password
+Content-Type: application/json
+
+{
+    "password": "miNuevaContrasenaCliente456"
+}
+
+### 6. FLUJO COMPLETO: Validar + Cambiar contraseña de Admin
+### Paso 1: Validar contraseña actual
+POST http://localhost:9999/api/v1/admin/1/validate-password
+Content-Type: application/json
+
+{
+    "password": "LuanH73037172"
+}
+
+### Paso 2: Si la validación es exitosa (respuesta: true), entonces cambiar
+PUT http://localhost:9999/api/v1/admin/1/password
+Content-Type: application/json
+
+{
+    "password": "miNuevaContrasena456"
+}
+
+### 7. OBTENER HISTORIAL DE CONTRASEÑAS DE CLIENTE
+GET http://localhost:9999/api/v1/historial-contrasena/cliente/1
+
+### 8. OBTENER HISTORIAL DE CONTRASEÑAS DE ADMINISTRADOR
+GET http://localhost:9999/api/v1/historial-contrasena/admin/1
+
+### ============================================
+### EJEMPLOS DE LOGIN (para referencia)
+### ============================================
+
+### Login de Cliente
+POST http://localhost:9999/api/v1/cliente/login
+Content-Type: application/json
+
+{
+    "correo": "luanhuancam@gmail.com",
+    "password": "Luan123456789."
+}
+
+### Login de Admin
+POST http://localhost:9999/api/v1/admin/login
+Content-Type: application/json
+
+{
+    "correo": "Luan.Huanca@tuguia.bo",
+    "password": "LuanH73037172"
+}

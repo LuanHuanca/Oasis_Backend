@@ -138,14 +138,8 @@ public class ClienteBl {
 
         // Validar historial (últimas 5 contraseñas)
         int checkLast = 5;
-        List<HistorialContrasena> history = historialService.findHistoryForCliente(clienteActual.getIdCliente());
-        int compared = 0;
-        for (HistorialContrasena h : history) {
-            if (compared >= checkLast) break;
-            if (bCryptPasswordEncoder.matches(saltedNew, h.getContrasenaHash())) {
-                throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
-            }
-            compared++;
+        if (historialService.isPasswordUsedByCliente(clienteActual.getIdCliente(), saltedNew, checkLast)) {
+            throw new RuntimeException("La nueva contraseña ya fue usada anteriormente. Elija otra.");
         }
 
         // Guardar contraseña actual en historial
@@ -166,5 +160,21 @@ public class ClienteBl {
             throw new RuntimeException("Cliente does not exist");
         }
         clienteDao.delete(cliente);
+    }
+
+    /**
+     * Valida la contraseña actual de un cliente
+     * @param id ID del cliente
+     * @param currentPassword Contraseña actual en texto plano
+     * @return true si la contraseña es correcta, false en caso contrario
+     */
+    public boolean validateCurrentPassword(Long id, String currentPassword) {
+        Cliente cliente = clienteDao.findById(id).orElse(null);
+        if (cliente == null) {
+            throw new RuntimeException("Cliente no existe");
+        }
+
+        String saltedCurrent = currentPassword + "Aqm,24Dla";
+        return bCryptPasswordEncoder.matches(saltedCurrent, cliente.getPassword());
     }
 }

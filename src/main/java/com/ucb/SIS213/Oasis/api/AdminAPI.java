@@ -1,13 +1,12 @@
 package com.ucb.SIS213.Oasis.api;
 
 import com.ucb.SIS213.Oasis.bl.AdminBl;
-import com.ucb.SIS213.Oasis.dto.AdminDTO;
 import com.ucb.SIS213.Oasis.dto.LoginRequestDTO;
+import com.ucb.SIS213.Oasis.dto.PasswordChangeDTO;
 import com.ucb.SIS213.Oasis.dto.ResponseDTO;
 import com.ucb.SIS213.Oasis.entity.Admin;
 import com.ucb.SIS213.Oasis.entity.Persona;
 import com.ucb.SIS213.Oasis.entity.Rol;
-import com.ucb.SIS213.Oasis.entity.AdminPermiso;
 import com.ucb.SIS213.Oasis.exep.UserException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,5 +173,38 @@ public class AdminAPI {
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
         return new ResponseDTO("Admin eliminado");
+    }
+
+    // Endpoint para cambiar solo la contraseña de un admin
+    @PutMapping("/{id}/password")
+    public ResponseDTO updatePassword(@PathVariable Long id, @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        try {
+            String newPassword = passwordChangeDTO.getPassword();
+            if (newPassword == null || newPassword.isBlank()) {
+                return new ResponseDTO("TASK-1002", "La contraseña no puede estar vacía");
+            }
+            Admin adminActualizado = adminBl.updatePassword(id, newPassword);
+            LOGGER.info("Contraseña del admin actualizada");
+            return new ResponseDTO(adminActualizado);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al actualizar la contraseña del admin", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+    }
+
+    // Endpoint para validar la contraseña actual de un admin
+    @PostMapping("/{id}/validate-password")
+    public ResponseDTO validateCurrentPassword(@PathVariable Long id, @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        try {
+            String currentPassword = passwordChangeDTO.getPassword();
+            if (currentPassword == null || currentPassword.isBlank()) {
+                return new ResponseDTO("TASK-1002", "La contraseña no puede estar vacía");
+            }
+            boolean isValid = adminBl.validateCurrentPassword(id, currentPassword);
+            return new ResponseDTO(isValid);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al validar la contraseña del admin", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
     }
 }

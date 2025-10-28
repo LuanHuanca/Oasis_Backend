@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ucb.SIS213.Oasis.dto.ClienteDTO;
+import com.ucb.SIS213.Oasis.dto.PasswordChangeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -155,10 +156,10 @@ public class ClienteAPI {
 
     // Endpoint para cambiar solo la contraseña
     @PutMapping("/{id}/password")
-    public ResponseDTO updatePassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
+    public ResponseDTO updatePassword(@PathVariable Long id, @RequestBody PasswordChangeDTO passwordChangeDTO) {
 
         try {
-            String newPassword = body.get("password");
+            String newPassword = passwordChangeDTO.getPassword();
             if (newPassword == null || newPassword.isBlank()) {
                 return new ResponseDTO("TASK-1002", "La contraseña no puede estar vacía");
             }
@@ -166,6 +167,23 @@ public class ClienteAPI {
             return new ResponseDTO(clienteActualizado);
         } catch (RuntimeException e) {
             LOGGER.error("Error al actualizar la contraseña", e);
+            return new ResponseDTO("TASK-1000", e.getMessage());
+        }
+    }
+
+    // Endpoint para validar la contraseña actual de un cliente
+    @PostMapping("/{id}/validate-password")
+    public ResponseDTO validateCurrentPassword(@PathVariable Long id, @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        try {
+            String currentPassword = passwordChangeDTO.getPassword();
+            if (currentPassword == null || currentPassword.isBlank()) {
+                return new ResponseDTO("TASK-1002", "La contraseña no puede estar vacía");
+            }
+            boolean isValid = clienteBl.validateCurrentPassword(id, currentPassword);
+            LOGGER.info("Validación de contraseña del cliente realizada");
+            return new ResponseDTO(isValid);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error al validar la contraseña del cliente", e);
             return new ResponseDTO("TASK-1000", e.getMessage());
         }
     }
