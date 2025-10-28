@@ -18,13 +18,25 @@ public class HistorialContrasenaService {
         this.repository = repository;
     }
 
-    public List<HistorialContrasena> findHistoryForPersona(Long idPersona) {
-        return repository.findByIdPersonaOrderByFechaCambioDesc(idPersona);
+    public List<HistorialContrasena> findHistoryForCliente(Long idCliente) {
+        return repository.findByIdClienteOrderByFechaCambioDesc(idCliente);
     }
 
-    public void saveHistory(Long idPersona, String passwordHash) {
+    public List<HistorialContrasena> findHistoryForAdmin(Long idAdmin) {
+        return repository.findByIdAdminOrderByFechaCambioDesc(idAdmin);
+    }
+
+    public void saveHistory(Long idCliente, String passwordHash) {
         HistorialContrasena h = new HistorialContrasena();
-        h.setIdPersona(idPersona);
+        h.setIdCliente(idCliente);
+        h.setContrasenaHash(passwordHash);
+        h.setFechaCambio(LocalDateTime.now());
+        repository.save(h);
+    }
+
+    public void saveHistoryForAdmin(Long idAdmin, String passwordHash) {
+        HistorialContrasena h = new HistorialContrasena();
+        h.setIdAdmin(idAdmin);
         h.setContrasenaHash(passwordHash);
         h.setFechaCambio(LocalDateTime.now());
         repository.save(h);

@@ -120,6 +120,8 @@ ALTER TABLE Cliente
   RENAME COLUMN estadoCuenta_tmp TO estadoCuenta;
 
 
+
+
 -- Table: Comentarios
 CREATE TABLE Comentarios (
     idComentario serial NOT NULL,
@@ -502,28 +504,6 @@ CREATE TABLE HistorialContrasena (
 
 ALTER TABLE HistorialContrasena
 ADD COLUMN idAdmin int NULL;
-
-
--- 1️⃣ Elimina las llaves foráneas actuales (si existen)
-ALTER TABLE HistorialContrasena
-DROP CONSTRAINT IF EXISTS HistorialContrasena_Cliente_fk;
-
--- 2️⃣ Elimina las columnas que ya no se usarán
-ALTER TABLE HistorialContrasena
-DROP COLUMN IF EXISTS idCliente,
-DROP COLUMN IF EXISTS idAdmin;
-
--- 3️⃣ Agrega la nueva columna idPersona
-ALTER TABLE HistorialContrasena
-ADD COLUMN idPersona int NOT NULL;
-
--- 4️⃣ Crea la relación con la tabla Persona
-ALTER TABLE HistorialContrasena
-ADD CONSTRAINT HistorialContrasena_Persona_fk
-FOREIGN KEY (idPersona)
-REFERENCES Persona (idPersona)
-ON DELETE CASCADE;
-
 
 -- End of file.
 
