@@ -1,0 +1,491 @@
+### 1. GESTIÓN DE PERMISOS POR ROL (PREDETERMINADOS)
+### ============================================
+
+### Asignar un permiso a un rol
+POST http://localhost:9999/api/v1/rol-permiso/asignar
+Content-Type: application/json
+
+{
+    "rolId": 1,
+    "permisoId": 1
+}
+
+### Asignar múltiples permisos a un rol
+POST http://localhost:9999/api/v1/rol-permiso/asignar-multiples
+Content-Type: application/json
+
+{
+    "rolId": 1,
+    "permisoIds": [1, 2, 3, 4]
+}
+
+### Obtener todos los permisos de un rol
+GET http://localhost:9999/api/v1/rol-permiso/rol/3
+
+### Obtener solo los permisos (sin relación) de un rol
+GET http://localhost:9999/api/v1/rol-permiso/rol/1/permisos
+
+### Verificar si un rol tiene un permiso específico
+GET http://localhost:9999/api/v1/rol-permiso/rol/1/tiene-permiso/1
+
+### Reemplazar todos los permisos de un rol
+PUT http://localhost:9999/api/v1/rol-permiso/rol/1/reemplazar
+Content-Type: application/json
+
+{
+    "permisoIds": [2, 3, 5]
+}
+
+### Eliminar un permiso específico de un rol
+DELETE http://localhost:9999/api/v1/rol-permiso/rol/1/permiso/1
+
+### ============================================
+### 2. GESTIÓN DE PERMISOS TEMPORALES
+### ============================================
+
+### Asignar permiso temporal con fecha específica
+POST http://localhost:9999/api/v1/permiso-temporal/asignar
+Content-Type: application/json
+
+{
+    "adminId": 1,
+    "permisoId": 5,
+    "fechaFin": "2024-12-31 23:59:59",
+    "motivo": "Proyecto especial de fin de año"
+}
+
+### Asignar permiso temporal por días
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-dias
+Content-Type: application/json
+
+{
+    "adminId": 1,
+    "permisoId": 6,
+    "dias": 7,
+    "motivo": "Capacitación de una semana"
+}
+
+### Asignar permiso temporal por horas
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-horas
+Content-Type: application/json
+
+{
+    "adminId": 1,
+    "permisoId": 7,
+    "horas": 24,
+    "motivo": "Emergencia del sistema"
+}
+
+### Obtener todos los permisos temporales de un admin
+GET http://localhost:9999/api/v1/permiso-temporal/admin/2
+
+### Obtener permisos temporales activos de un admin
+GET http://localhost:9999/api/v1/permiso-temporal/admin/1/activos
+
+### Obtener permisos temporales válidos de un admin
+GET http://localhost:9999/api/v1/permiso-temporal/admin/2/validos
+
+### Extender un permiso temporal
+PUT http://localhost:9999/api/v1/permiso-temporal/1/extender
+Content-Type: application/json
+
+{
+    "nuevaFechaFin": "2025-01-15 23:59:59"
+}
+
+### Revocar un permiso temporal
+PUT http://localhost:9999/api/v1/permiso-temporal/1/revocar
+
+### Obtener permisos temporales expirados
+GET http://localhost:9999/api/v1/permiso-temporal/expirados
+
+### Obtener permisos temporales que expiran pronto
+GET http://localhost:9999/api/v1/permiso-temporal/por-expirar
+
+### Obtener estadísticas de permisos temporales
+GET http://localhost:9999/api/v1/permiso-temporal/estadisticas
+
+### ============================================
+### 3. GESTIÓN COMPLETA DE PERMISOS
+### ============================================
+
+### Obtener TODOS los permisos efectivos de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/2/permisos-efectivos
+
+### Verificar si un admin tiene un permiso específico
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/tiene-permiso/1
+
+### Asignar permiso adicional a un admin
+POST http://localhost:9999/api/v1/gestion-permisos/admin/1/permiso-adicional
+Content-Type: application/json
+
+{
+    "permisoId": 1
+}
+
+### Revocar permiso adicional de un admin
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/2/permiso-adicional/9
+
+### Obtener permisos adicionales de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-adicionales
+
+### Obtener permisos temporales de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-temporales
+
+### Obtener permisos del rol de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-rol
+
+### Obtener resumen completo de permisos de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/resumen
+
+### Verificar múltiples permisos de un admin
+POST http://localhost:9999/api/v1/gestion-permisos/admin/1/verificar-permisos
+Content-Type: application/json
+
+{
+    "permisoIds": [1, 2, 3, 4, 5]
+}
+
+### ============================================
+### 4. EJEMPLOS DE FLUJOS COMPLETOS
+### ============================================
+
+### Flujo 1: Configurar permisos predeterminados para un rol
+### Paso 1: Asignar permisos básicos al rol "Analista 1"
+POST http://localhost:9999/api/v1/rol-permiso/asignar-multiples
+Content-Type: application/json
+
+{
+    "rolId": 5,
+    "permisoIds": [1, 2, 3]
+}
+
+### Paso 2: Crear un admin con ese rol (usar AdminAPI existente)
+### Paso 3: Verificar que tiene los permisos del rol
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-rol
+
+### Flujo 2: Dar permisos adicionales a un admin específico
+### Paso 1: Asignar permiso adicional
+POST http://localhost:9999/api/v1/gestion-permisos/admin/1/permiso-adicional
+Content-Type: application/json
+
+{
+    "permisoId": 4
+}
+
+### Paso 2: Verificar permisos efectivos (rol + adicional)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-efectivos
+
+### Flujo 3: Dar permiso temporal para proyecto especial
+### Paso 1: Asignar permiso temporal por 30 días
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-dias
+Content-Type: application/json
+
+{
+    "adminId": 1,
+    "permisoId": 9,
+    "dias": 30,
+    "motivo": "Proyecto de migración de datos"
+}
+
+### Paso 2: Verificar que tiene el permiso temporal
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/tiene-permiso/9
+
+### Paso 3: Ver resumen completo
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/resumen
+
+### ============================================
+### 5. CASOS DE USO REALES
+### ============================================
+
+### Caso 1: Admin necesita acceso temporal para emergencia
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-horas
+Content-Type: application/json
+
+{
+    "adminId": 2,
+    "permisoId": 10,
+    "horas": 8,
+    "motivo": "Emergencia: falla en servidor de producción"
+}
+
+### Caso 2: Admin necesita permiso adicional permanente
+POST http://localhost:9999/api/v1/gestion-permisos/admin/2/permiso-adicional
+Content-Type: application/json
+
+{
+    "permisoId": 11
+}
+
+### Caso 3: Verificar si admin puede realizar acción específica
+GET http://localhost:9999/api/v1/gestion-permisos/admin/2/tiene-permiso/10
+
+### Caso 4: Auditoría - ver todos los permisos de un admin
+GET http://localhost:9999/api/v1/gestion-permisos/admin/2/resumen
+
+### ============================================
+### 5. LIMPIAR PERMISOS (ÚTIL AL CAMBIAR DE ROL)
+### ============================================
+
+### Limpiar TODOS los permisos personales (adicionales + temporales)
+### El admin solo mantendrá los permisos de su rol
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/2/limpiar-todos-permisos
+
+###
+
+### Eliminar PERMANENTEMENTE todos los permisos personales (⚠️ IRREVERSIBLE)
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/1/eliminar-todos-permisos
+
+###
+
+### Limpiar solo permisos adicionales
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/1/limpiar-adicionales
+
+###
+
+### Limpiar solo permisos temporales
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/1/limpiar-temporales
+
+###
+
+### ============================================
+### 6. FLUJO COMPLETO: CAMBIAR ROL Y LIMPIAR PERMISOS
+### ============================================
+
+### ESCENARIO: María necesita cambiar de rol y queremos que SOLO tenga
+### los permisos del nuevo rol (sin mantener permisos anteriores)
+
+### Paso 1: Ver permisos actuales de María (Admin ID: 10)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+### Resultado actual (ejemplo):
+### {
+###   "permisosRol": [1, 2, 3],        // Del rol Analista
+###   "permisosAdicionales": [8, 12],  // Adicionales
+###   "permisosTemporales": [15],      // Temporales
+###   "permisosEfectivos": [1,2,3,8,12,15]
+### }
+
+###
+
+### Paso 2: Limpiar TODOS los permisos personales ANTES de cambiar rol
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/10/limpiar-todos-permisos
+
+###
+
+### Paso 3: Cambiar el rol a Gerente
+PUT http://localhost:9999/api/v1/admin/updateRole/10
+Content-Type: application/json
+
+{
+  "rolId": 2
+}
+
+###
+
+### Paso 4: Verificar que solo tiene permisos del nuevo rol
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+### Resultado esperado:
+### {
+###   "permisosRol": [4, 5, 6, 7],     // Del rol Gerente ✅
+###   "permisosAdicionales": [],       // Vacío ✅
+###   "permisosTemporales": [],        // Vacío ✅
+###   "permisosEfectivos": [4,5,6,7]   // Solo del rol ✅
+### }
+
+###
+
+### Paso 5: (Opcional) Si necesita permisos adicionales nuevos, asignarlos
+POST http://localhost:9999/api/v1/gestion-permisos/admin/10/permiso-adicional
+Content-Type: application/json
+
+{
+  "permisoId": 20
+}
+
+###
+
+### ============================================
+### 7. ESCENARIOS DETALLADOS CON EXPLICACIONES
+### ============================================
+
+### 📌 ESCENARIO 1: ADMIN CAMBIA DE ROL
+### ============================================
+### María es Analista (Rol ID: 3) con permisos [1, 2, 3]
+### Le dimos un permiso adicional [8] = "Aprobar Solicitudes"
+### 
+### Estado actual de María:
+### - Permisos del rol Analista: [1, 2, 3]
+### - Permiso adicional: [8]
+### - Total: [1, 2, 3, 8]
+
+### Verificar permisos actuales de María (Admin ID: 10)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+### Ahora María es promovida a Gerente (Rol ID: 2)
+### Usar AdminAPI para cambiar su rol a ID: 2
+### PUT http://localhost:9999/api/v1/admin/10
+### Body: { "rol": 2, ... }
+
+### Verificar permisos después del cambio de rol
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+### Resultado esperado:
+### - Permisos del rol Gerente: [4, 5, 6, 7] ✅ (nuevos del rol)
+### - Permiso adicional: [8] ✅ (se mantiene)
+### - Total: [4, 5, 6, 7, 8]
+### ❌ Ya NO tiene [1, 2, 3] porque cambió de rol
+
+### ============================================
+### 📌 ESCENARIO 2: PASANTE POR 3 MESES
+### ============================================
+### Carlos es pasante y necesita acceso limitado
+### Rol: Pasante (ID: 6) con permisos básicos [1, 2]
+### Necesita permiso especial [15] = "Editar Documentos" solo por 3 meses
+
+### Paso 1: Asignar permiso temporal por 90 días
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-dias
+Content-Type: application/json
+
+{
+    "adminId": 15,
+    "permisoId": 15,
+    "dias": 90,
+    "motivo": "Pasantía de 3 meses - Proyecto Documentación"
+}
+
+### Paso 2: Verificar que tiene el permiso temporal
+GET http://localhost:9999/api/v1/gestion-permisos/admin/15/permisos-temporales
+
+### Paso 3: Ver resumen completo
+GET http://localhost:9999/api/v1/gestion-permisos/admin/15/resumen
+
+### Resultado:
+### - Permisos del rol: [1, 2]
+### - Permisos temporales: [15] (válido por 90 días)
+### - Total efectivo: [1, 2, 15]
+### ⏰ Después de 90 días, automáticamente solo tendrá [1, 2]
+
+### ============================================
+### 📌 ESCENARIO 3: EMERGENCIA NOCTURNA
+### ============================================
+### Es viernes noche y hay un problema crítico
+### Pedro (Admin ID: 8) necesita acceso de emergencia
+### Permiso [20] = "Acceso Root Servidor" solo por esta noche (12 horas)
+
+### Asignar permiso temporal por horas
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-horas
+Content-Type: application/json
+
+{
+    "adminId": 8,
+    "permisoId": 20,
+    "horas": 12,
+    "motivo": "EMERGENCIA: Caída del servidor de producción - Ticket #4521"
+}
+
+### Verificar inmediatamente que tiene el permiso
+GET http://localhost:9999/api/v1/gestion-permisos/admin/8/tiene-permiso/20
+
+### Resultado: true ✅
+### ⏰ En 12 horas se desactiva automáticamente
+
+### ============================================
+### 📌 ESCENARIO 4: PROYECTO ESPECIAL CON FECHA EXACTA
+### ============================================
+### Laura trabaja en proyecto especial del 1 al 15 de enero
+### Necesita permiso [25] = "Acceso Base de Datos Financiera"
+### Fecha exacta: hasta el 15 de enero a las 18:00
+
+### Asignar con fecha específica
+POST http://localhost:9999/api/v1/permiso-temporal/asignar
+Content-Type: application/json
+
+{
+    "adminId": 12,
+    "permisoId": 25,
+    "fechaFin": "2025-01-15T18:00:00",
+    "motivo": "Proyecto: Auditoría Financiera Anual 2024"
+}
+
+### Ver detalles del permiso temporal
+GET http://localhost:9999/api/v1/gestion-permisos/admin/12/permisos-temporales
+
+### Si el proyecto se extiende, puedes extender el permiso
+PUT http://localhost:9999/api/v1/permiso-temporal/1/extender
+Content-Type: application/json
+
+{
+    "nuevaFechaFin": "2025-01-31T18:00:00"
+}
+
+### ============================================
+### 📌 ESCENARIO 5: PERMISO ADICIONAL PERMANENTE
+### ============================================
+### Roberto es Analista Senior que siempre aprueba solicitudes
+### Necesita permiso [30] = "Aprobar Presupuestos" de forma PERMANENTE
+### Este permiso NO es del rol, es solo para él
+
+### Asignar permiso adicional
+POST http://localhost:9999/api/v1/gestion-permisos/admin/20/permiso-adicional
+Content-Type: application/json
+
+{
+    "permisoId": 30
+}
+
+### Ver permisos adicionales de Roberto
+GET http://localhost:9999/api/v1/gestion-permisos/admin/20/permisos-adicionales
+
+### Ver resumen completo
+GET http://localhost:9999/api/v1/gestion-permisos/admin/20/resumen
+
+### ✅ Roberto tendrá este permiso permanentemente
+### ⚠️ Otros Analistas Senior NO tienen este permiso
+### ⚠️ Este permiso se mantiene aunque Roberto cambie de rol
+
+### Si Roberto ya no necesita este permiso, revocarlo:
+DELETE http://localhost:9999/api/v1/gestion-permisos/admin/20/permiso-adicional/30
+
+### ============================================
+### 💡 RESUMEN DE DIFERENCIAS CLAVE
+### ============================================
+###
+### 🔵 PERMISOS DE ROL:
+### ✅ Para todos los admins con ese rol
+### ❌ Cambias de rol = cambias permisos
+### 📝 Se configuran en RolPermiso
+### 
+### 🟢 PERMISOS ADICIONALES:
+### ✅ Solo para UNA persona específica
+### ✅ Se mantienen al cambiar de rol
+### ✅ Permanentes hasta revocar
+### 📝 Se configuran en AdminPermiso con tipo "ADICIONAL"
+###
+### 🟡 PERMISOS TEMPORALES:
+### ✅ Solo para UNA persona específica
+### ✅ Tienen fecha de expiración
+### ✅ Se desactivan automáticamente
+### 📝 Se configuran en PermisoTemporal
+### ⏰ Opciones: días, horas, fecha exacta
+###
+### ============================================
+### 🎯 FLUJO RECOMENDADO PARA ASIGNAR PERMISOS
+### ============================================
+###
+### 1️⃣ ¿El permiso es para TODO el rol?
+###    → Usa PERMISOS DE ROL
+###    → POST /api/v1/rol-permiso/asignar
+###
+### 2️⃣ ¿El permiso es solo para UNA persona de forma permanente?
+###    → Usa PERMISOS ADICIONALES
+###    → POST /api/v1/gestion-permisos/admin/{id}/permiso-adicional
+###
+### 3️⃣ ¿El permiso es temporal (proyecto, pasantía, emergencia)?
+###    → Usa PERMISOS TEMPORALES
+###    → POST /api/v1/permiso-temporal/asignar-por-dias
+###    → POST /api/v1/permiso-temporal/asignar-por-horas
+###    → POST /api/v1/permiso-temporal/asignar (fecha exacta)
+###
+### ============================================

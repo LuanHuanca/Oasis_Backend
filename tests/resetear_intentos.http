@@ -1,0 +1,26 @@
+### Resetear intentos fallidos del admin
+### (Esto se hace automáticamente en cada login exitoso, pero puedes forzarlo)
+
+### Opción 1: Hacer login (resetea automáticamente)
+POST http://localhost:9999/api/v1/admin/login
+Content-Type: application/json
+
+{
+  "correo": "luan.huanca@tuguia.bo",
+  "password": "luanh7303712"
+}
+
+###
+
+### Opción 2: Verificar estado actual
+GET http://localhost:9999/api/v1/bloqueo/admin/1/info
+Accept: application/json
+
+###
+
+### Opción 3: Desbloquear cuenta (si estuviera bloqueada)
+POST http://localhost:9999/api/v1/bloqueo/admin/1/desbloquear
+Content-Type: application/json
+
+###
+

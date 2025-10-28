@@ -7,6 +7,7 @@ import com.ucb.SIS213.Oasis.entity.Permiso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +28,16 @@ public class AdminPermisoBl {
     }
 
     public AdminPermiso createAdminPermiso(AdminPermiso adminPermiso) {
+        // Asegurar que los campos obligatorios estén inicializados
+        if (adminPermiso.getTipoPermiso() == null) {
+            adminPermiso.setTipoPermiso("ROL"); // Por defecto, permisos de rol
+        }
+        if (adminPermiso.getFechaAsignacion() == null) {
+            adminPermiso.setFechaAsignacion(LocalDateTime.now());
+        }
+        if (adminPermiso.getActivo() == null) {
+            adminPermiso.setActivo(true);
+        }
         return adminPermisoDAO.save(adminPermiso);
     }
 

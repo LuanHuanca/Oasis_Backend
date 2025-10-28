@@ -19,14 +19,17 @@ public class AdminBl {
     private AdminPermisoDAO adminPermisoDao;
     private AdminPermisoBl adminPermisoBl;
     private HistorialContrasenaService historialService;
+    private BloqueoCuentaService bloqueoCuentaService;
 
 
     @Autowired
-    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, AdminPermisoDAO adminPermisoDao, HistorialContrasenaService historialService) {
+    public AdminBl(AdminDao adminDao, BCryptPasswordEncoder bCryptPasswordEncoder, AdminPermisoDAO adminPermisoDao, 
+                   HistorialContrasenaService historialService, BloqueoCuentaService bloqueoCuentaService) {
         this.adminDao = adminDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.adminPermisoDao = adminPermisoDao;
         this.historialService = historialService;
+        this.bloqueoCuentaService = bloqueoCuentaService;
     }
 
     public List<Admin> getAllAdmin() {
@@ -42,29 +45,57 @@ public class AdminBl {
     }
 
     public Admin createAdmin(Admin admin) {
-        String password = admin.getPassword();
+        // Aplicar salt a la contraseña (consistente con login)
+        String password = admin.getPassword() + "Aqm,24Dla";
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         admin.setPassword(hashedPassword);
+        
+        // Inicializar campos de bloqueo de cuenta
+        if (admin.getEstadoCuenta() == null) {
+            admin.setEstadoCuenta(true); // Cuenta activa por defecto
+        }
+        if (admin.getIntentosFallidos() == null) {
+            admin.setIntentosFallidos(0);
+        }
+        
         return adminDao.save(admin);
     }
 
     public Admin login(String correo, String password) throws UserException {
-        // Encontrar al cliente por correo
+        // Encontrar al admin por correo
         Admin admin = adminDao.findByCorreo(correo);
 
         if (admin == null) {
             throw new UserException("Correo o contraseña incorrectos");
         }
 
-        // Obtener la contraseña almacenada del cliente
-        String hashedPassword = admin.getPassword();
+        // ✅ VERIFICAR SI LA CUENTA ESTÁ BLOQUEADA
+        if (admin.getEstadoCuenta() != null && !admin.getEstadoCuenta()) {
+            throw new UserException("CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada. " +
+                    "Por favor, contacte a soporte o envíe un correo a soporte@oasis.com para su desbloqueo. " +
+                    "Motivo: " + (admin.getMotivoBloqueo() != null ? admin.getMotivoBloqueo() : "No especificado"));
+        }
 
+        // Obtener la contraseña almacenada del admin
+        String hashedPassword = admin.getPassword();
         String mypassword = password +"Aqm,24Dla";
 
         // Verificar si la contraseña proporcionada coincide con la contraseña almacenada después de ser hasheada
         if (!bCryptPasswordEncoder.matches(mypassword, hashedPassword)) {
-            throw new UserException("Correo o contraseña incorrectos");
+            // ❌ Contraseña incorrecta - registrar intento fallido
+            BloqueoCuentaService.IntentosResult resultado = bloqueoCuentaService.registrarIntentoFallidoAdmin(admin.getIdAdmin());
+            
+            if (resultado.isBloqueado()) {
+                throw new UserException("CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada por múltiples intentos fallidos. " +
+                        "Contacte a soporte@oasis.com para desbloquearla.");
+            } else {
+                throw new UserException("PASSWORD_INCORRECTO: Contraseña incorrecta. Le quedan " + 
+                        resultado.getIntentosRestantes() + " intentos.");
+            }
         }
+
+        // ✅ Login exitoso - reiniciar intentos
+        bloqueoCuentaService.reiniciarIntentosAdmin(admin.getIdAdmin());
 
         // No es necesario volver a hashear la contraseña al hacer el login
         admin.setPassword(null);
@@ -111,10 +142,29 @@ public class AdminBl {
             adminExistente.setPassword(hashed);
         }
 
-        // update other fields
-        adminExistente.setCorreo(admin.getCorreo());
-        adminExistente.setIdPersona(admin.getIdPersona());
-        adminExistente.setRol(admin.getRol());
+        // update other fields (solo si no son null)
+        if (admin.getCorreo() != null && !admin.getCorreo().isBlank()) {
+            adminExistente.setCorreo(admin.getCorreo());
+        }
+        if (admin.getIdPersona() != null) {
+            adminExistente.setIdPersona(admin.getIdPersona());
+        }
+        if (admin.getRol() != null) {
+            adminExistente.setRol(admin.getRol());
+        }
+        // Preservar campos de bloqueo si no se especifican
+        if (admin.getEstadoCuenta() != null) {
+            adminExistente.setEstadoCuenta(admin.getEstadoCuenta());
+        }
+        if (admin.getIntentosFallidos() != null) {
+            adminExistente.setIntentosFallidos(admin.getIntentosFallidos());
+        }
+        if (admin.getFechaBloqueo() != null) {
+            adminExistente.setFechaBloqueo(admin.getFechaBloqueo());
+        }
+        if (admin.getMotivoBloqueo() != null) {
+            adminExistente.setMotivoBloqueo(admin.getMotivoBloqueo());
+        }
 
         return adminDao.save(adminExistente);
     }

@@ -99,25 +99,13 @@ CREATE TABLE Cliente (
     idCliente serial NOT NULL,
     correo varchar(45) NOT NULL,
     password varchar(255) NOT NULL,
-    estadoCuenta varchar(45) NOT NULL,
+    estadoCuenta boolean NOT NULL DEFAULT true,
+    intentosFallidos int NOT NULL DEFAULT 0,
+    fechaBloqueo timestamp NULL,
+    motivoBloqueo varchar(255) NULL,
     Persona_idPersona int NOT NULL,
     CONSTRAINT Cliente_pk PRIMARY KEY (idCliente)
 );
-
-ALTER TABLE Cliente
-  ADD COLUMN estadoCuenta_tmp boolean;
-
-UPDATE Cliente
-  SET estadoCuenta_tmp = CASE
-      WHEN LOWER(estadoCuenta) IN ('activo', 'true', '1') THEN true
-      ELSE false
-  END;
-
-ALTER TABLE Cliente
-  DROP COLUMN estadoCuenta;
-
-ALTER TABLE Cliente
-  RENAME COLUMN estadoCuenta_tmp TO estadoCuenta;
 
 
 
@@ -249,6 +237,10 @@ CREATE TABLE admin (
     idadmin serial NOT NULL,
     correo varchar(45) NOT NULL,
     password varchar(255) NOT NULL,
+    estadoCuenta boolean NOT NULL DEFAULT true,
+    intentosFallidos int NOT NULL DEFAULT 0,
+    fechaBloqueo timestamp NULL,
+    motivoBloqueo varchar(255) NULL,
     rol_idrol int NOT NULL,
     persona_idpersona int NOT NULL,
     CONSTRAINT admin_pk PRIMARY KEY (idadmin),
@@ -510,6 +502,91 @@ CREATE TABLE HistorialContrasena (
         (idCliente IS NULL AND idAdmin IS NOT NULL)
     )
 );
+
+-- Table: RolPermiso (Permisos predeterminados por rol)
+CREATE TABLE RolPermiso (
+    idRolPermiso serial NOT NULL,
+    rol_idRol int NOT NULL,
+    permiso_idPermiso int NOT NULL,
+    fechaAsignacion timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT RolPermiso_pk PRIMARY KEY (idRolPermiso),
+    CONSTRAINT RolPermiso_Rol_fk FOREIGN KEY (rol_idRol)
+        REFERENCES Rol (idRol)
+        ON DELETE CASCADE,
+    CONSTRAINT RolPermiso_Permiso_fk FOREIGN KEY (permiso_idPermiso)
+        REFERENCES Permiso (idPermiso)
+        ON DELETE CASCADE,
+    CONSTRAINT RolPermiso_unique UNIQUE (rol_idRol, permiso_idPermiso)
+);
+
+-- Table: PermisoTemporal (Permisos con tiempo límite)
+CREATE TABLE PermisoTemporal (
+    idPermisoTemporal serial NOT NULL,
+    admin_idAdmin int NOT NULL,
+    permiso_idPermiso int NOT NULL,
+    fechaInicio timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fechaFin timestamp NOT NULL,
+    motivo varchar(255) NULL,
+    activo boolean NOT NULL DEFAULT true,
+    fechaCreacion timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT PermisoTemporal_pk PRIMARY KEY (idPermisoTemporal),
+    CONSTRAINT PermisoTemporal_Admin_fk FOREIGN KEY (admin_idAdmin)
+        REFERENCES admin (idadmin)
+        ON DELETE CASCADE,
+    CONSTRAINT PermisoTemporal_Permiso_fk FOREIGN KEY (permiso_idPermiso)
+        REFERENCES Permiso (idPermiso)
+        ON DELETE CASCADE,
+    CONSTRAINT PermisoTemporal_fecha_check CHECK (fechaFin > fechaInicio)
+);
+
+-- Modificar tabla AdminPermiso para distinguir tipos de permisos
+ALTER TABLE AdminPermiso 
+ADD COLUMN tipoPermiso varchar(20) NOT NULL DEFAULT 'ADICIONAL',
+ADD COLUMN fechaAsignacion timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN activo boolean NOT NULL DEFAULT true;
+
+-- Agregar constraint para tipoPermiso
+ALTER TABLE AdminPermiso 
+ADD CONSTRAINT AdminPermiso_tipo_check CHECK (tipoPermiso IN ('ROL', 'ADICIONAL', 'TEMPORAL'));
+
+-- ============================================
+-- SISTEMA DE BLOQUEO DE CUENTAS Y AUDITORÍA
+-- ============================================
+
+-- Table: HistorialBloqueo (Auditoría de bloqueos/desbloqueos)
+CREATE TABLE HistorialBloqueo (
+    idHistorialBloqueo serial NOT NULL,
+    tipoUsuario varchar(20) NOT NULL,
+    idUsuario int NOT NULL,
+    accion varchar(20) NOT NULL,
+    motivo varchar(255) NULL,
+    fecha timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    realizadoPor int NULL,
+    ipOrigen varchar(50) NULL,
+    CONSTRAINT HistorialBloqueo_pk PRIMARY KEY (idHistorialBloqueo),
+    CONSTRAINT HistorialBloqueo_tipo_check CHECK (tipoUsuario IN ('CLIENTE', 'ADMIN')),
+    CONSTRAINT HistorialBloqueo_accion_check CHECK (accion IN ('BLOQUEO', 'DESBLOQUEO'))
+);
+
+-- Índices para búsquedas rápidas en HistorialBloqueo
+CREATE INDEX idx_historial_bloqueo_usuario ON HistorialBloqueo(tipoUsuario, idUsuario);
+CREATE INDEX idx_historial_bloqueo_fecha ON HistorialBloqueo(fecha DESC);
+
+-- ============================================
+-- COMENTARIOS EN COLUMNAS (Documentación)
+-- ============================================
+
+COMMENT ON COLUMN Cliente.estadoCuenta IS 'Estado de la cuenta: true = activa, false = bloqueada';
+COMMENT ON COLUMN Cliente.intentosFallidos IS 'Número de intentos de login fallidos consecutivos';
+COMMENT ON COLUMN Cliente.fechaBloqueo IS 'Fecha y hora en que se bloqueó la cuenta';
+COMMENT ON COLUMN Cliente.motivoBloqueo IS 'Motivo del bloqueo de cuenta';
+
+COMMENT ON COLUMN admin.estadoCuenta IS 'Estado de la cuenta: true = activa, false = bloqueada';
+COMMENT ON COLUMN admin.intentosFallidos IS 'Número de intentos de login fallidos consecutivos';
+COMMENT ON COLUMN admin.fechaBloqueo IS 'Fecha y hora en que se bloqueó la cuenta';
+COMMENT ON COLUMN admin.motivoBloqueo IS 'Motivo del bloqueo de cuenta';
+
+COMMENT ON TABLE HistorialBloqueo IS 'Historial de bloqueos y desbloqueos de cuentas para auditoría';
 
 -- End of file.
 

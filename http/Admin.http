@@ -5,7 +5,7 @@ Accept: application/json
 ###
 
 ### Obtener un admin por su ID
-GET http://localhost:9999/api/v1/admin/4
+GET http://localhost:9999/api/v1/admin/2
 Accept: application/json
 
 ###
@@ -33,8 +33,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "correo": "Luan.Huanca@oasis.bo",
-  "password": "LuanH7303712"
+  "correo": "luan.huanca@tuguia.bo",
+  "password": "NuevaContraseña123"
 }
 
 ###
@@ -51,7 +51,7 @@ Content-Type: application/json
     "idRol": 2
   },
   "persona": {
-    "idPersona": 1
+    "idPersona": 2
   }
 }
 
@@ -62,7 +62,7 @@ PUT http://localhost:9999/api/v1/admin/updateRole/1
 Content-Type: application/json
 
 {
-  "rolId": 9
+  "rolId": 3
 }
 
 ###

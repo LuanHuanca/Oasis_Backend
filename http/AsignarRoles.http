@@ -1,0 +1,390 @@
+### ============================================
+### ASIGNAR Y GESTIONAR ROLES DE ADMINISTRADORES
+### ============================================
+###
+### 📚 GUÍA RÁPIDA:
+### - Crear admin con rol
+### - Cambiar rol de admin existente
+### - Ver permisos después del cambio
+###
+### ROLES DISPONIBLES (ejemplos):
+### 1 = Super Admin
+### 2 = Gerente
+### 3 = Supervisor
+### 4 = Analista Senior
+### 5 = Analista Junior
+### 6 = Pasante
+###
+### ============================================
+
+### 1. CREAR ADMINISTRADOR CON ROL
+### ============================================
+
+### Ejemplo 1: Crear admin como Analista Junior
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "correo": "juan.perez@empresa.com",
+  "password": "Juan2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 5
+  }
+}
+
+###
+
+### Ejemplo 2: Crear admin como Gerente
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "María",
+  "apellido": "González",
+  "correo": "maria.gonzalez@empresa.com",
+  "password": "Maria2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 2
+  }
+}
+
+###
+
+### Ejemplo 3: Crear pasante
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Carlos",
+  "apellido": "Ramírez",
+  "correo": "carlos.ramirez@empresa.com",
+  "password": "Carlos2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 6
+  }
+}
+
+###
+
+### ============================================
+### 2. CAMBIAR ROL DE ADMIN EXISTENTE
+### ============================================
+
+### Ejemplo 1: Promover a Juan (Admin ID: 1) a Gerente
+PUT http://localhost:9999/api/v1/admin/updateRole/1
+Content-Type: application/json
+
+{
+  "rolId": 2
+}
+
+###
+
+### Ejemplo 2: Cambiar a María (Admin ID: 2) a Supervisor
+PUT http://localhost:9999/api/v1/admin/updateRole/2
+Content-Type: application/json
+
+{
+  "rolId": 3
+}
+
+###
+
+### Ejemplo 3: Bajar a Carlos (Admin ID: 3) a Pasante
+PUT http://localhost:9999/api/v1/admin/updateRole/3
+Content-Type: application/json
+
+{
+  "rolId": 6
+}
+
+###
+
+### ============================================
+### 3. VERIFICAR PERMISOS DESPUÉS DEL CAMBIO
+### ============================================
+
+### Ver resumen completo de permisos de Juan (Admin ID: 1)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/resumen
+
+###
+
+### Ver solo permisos del rol de Juan
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-rol
+
+###
+
+### Ver permisos adicionales de Juan
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-adicionales
+
+###
+
+### Ver permisos temporales de Juan
+GET http://localhost:9999/api/v1/gestion-permisos/admin/1/permisos-temporales
+
+###
+
+### ============================================
+### 4. FLUJO COMPLETO: CREAR Y GESTIONAR ADMIN
+### ============================================
+
+### PASO 1: Crear admin como Analista Junior
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Pedro",
+  "apellido": "López",
+  "correo": "pedro.lopez@empresa.com",
+  "password": "Pedro2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 5
+  }
+}
+
+### PASO 2: Ver qué permisos tiene del rol (supongamos que es Admin ID: 10)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/permisos-rol
+
+###
+
+### PASO 3: Darle un permiso adicional especial
+POST http://localhost:9999/api/v1/gestion-permisos/admin/10/permiso-adicional
+Content-Type: application/json
+
+{
+  "permisoId": 8
+}
+
+###
+
+### PASO 4: Ver resumen después de añadir permiso adicional
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+###
+
+### PASO 5: Promoverlo a Analista Senior
+PUT http://localhost:9999/api/v1/admin/updateRole/10
+Content-Type: application/json
+
+{
+  "rolId": 4
+}
+
+###
+
+### PASO 6: Ver resumen después del cambio de rol
+### NOTA: Perdió permisos del rol Junior, ganó permisos del rol Senior
+###       PERO mantuvo su permiso adicional [8]
+GET http://localhost:9999/api/v1/gestion-permisos/admin/10/resumen
+
+###
+
+### ============================================
+### 5. CASOS ESPECIALES
+### ============================================
+
+### CASO 1: Admin temporal (pasante por 3 meses)
+### Paso 1: Crear como pasante
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "apellido": "Torres",
+  "correo": "ana.torres@empresa.com",
+  "password": "Ana2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 6
+  }
+}
+
+### Paso 2: Dar permiso temporal por 90 días (supongamos Admin ID: 15)
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-dias
+Content-Type: application/json
+
+{
+  "adminId": 15,
+  "permisoId": 20,
+  "dias": 90,
+  "motivo": "Pasantía de 3 meses"
+}
+
+###
+
+### CASO 2: Admin de emergencia (acceso temporal)
+### Paso 1: Crear admin normal
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Roberto",
+  "apellido": "Sánchez",
+  "correo": "roberto.sanchez@empresa.com",
+  "password": "Roberto2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 5
+  }
+}
+
+### Paso 2: Dar acceso de emergencia por 12 horas (supongamos Admin ID: 20)
+POST http://localhost:9999/api/v1/permiso-temporal/asignar-por-horas
+Content-Type: application/json
+
+{
+  "adminId": 20,
+  "permisoId": 30,
+  "horas": 12,
+  "motivo": "EMERGENCIA: Servidor caído - Ticket #5678"
+}
+
+###
+
+### ============================================
+### 6. ACTUALIZAR ADMIN COMPLETO (INCLUYE ROL)
+### ============================================
+
+### Si necesitas actualizar TODO (nombre, correo, rol, etc.)
+PUT http://localhost:9999/api/v1/admin/update/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Carlos",
+  "apellido": "Pérez Gómez",
+  "correo": "juan.perez.new@empresa.com",
+  "password": "JuanNuevo2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 3
+  }
+}
+
+###
+
+### ============================================
+### 7. CONSULTAR INFORMACIÓN
+### ============================================
+
+### Ver todos los admins
+GET http://localhost:9999/api/v1/admin
+
+###
+
+### Ver un admin específico
+GET http://localhost:9999/api/v1/admin/1
+
+###
+
+### Ver todos los roles disponibles
+GET http://localhost:9999/api/v1/rol
+
+###
+
+### Ver permisos de un rol específico
+GET http://localhost:9999/api/v1/rol-permiso/rol/5
+
+###
+
+### ============================================
+### 8. EJEMPLOS CON RESPUESTAS ESPERADAS
+### ============================================
+
+### Ejemplo: Crear admin y ver su evolución
+
+### 1. Crear como Junior
+POST http://localhost:9999/api/v1/admin/create
+Content-Type: application/json
+
+{
+  "nombre": "Laura",
+  "apellido": "Martínez",
+  "correo": "laura.martinez@empresa.com",
+  "password": "Laura2024!",
+  "estado": true,
+  "rol": {
+    "idRol": 5
+  }
+}
+
+### Respuesta esperada:
+### {
+###   "idAdmin": 25,
+###   "nombre": "Laura",
+###   "rol": { "idRol": 5, "rol": "Analista Junior" },
+###   "permisos": [1, 2, 3]
+### }
+
+### 2. Ver permisos (supongamos Admin ID: 25)
+GET http://localhost:9999/api/v1/gestion-permisos/admin/25/resumen
+
+### Respuesta esperada:
+### {
+###   "permisosRol": [1, 2, 3],
+###   "permisosAdicionales": [],
+###   "permisosTemporales": [],
+###   "permisosEfectivos": [1, 2, 3]
+### }
+
+### 3. Dar permiso adicional
+POST http://localhost:9999/api/v1/gestion-permisos/admin/25/permiso-adicional
+Content-Type: application/json
+
+{
+  "permisoId": 10
+}
+
+### 4. Promover a Senior
+PUT http://localhost:9999/api/v1/admin/updateRole/25
+Content-Type: application/json
+
+{
+  "rolId": 4
+}
+
+### 5. Ver permisos después de promoción
+GET http://localhost:9999/api/v1/gestion-permisos/admin/25/resumen
+
+### Respuesta esperada:
+### {
+###   "permisosRol": [4, 5, 6, 7],        ← Cambió del rol Senior
+###   "permisosAdicionales": [10],        ← Se mantuvo
+###   "permisosTemporales": [],
+###   "permisosEfectivos": [4,5,6,7,10]
+### }
+
+###
+
+### ============================================
+### 💡 NOTAS IMPORTANTES
+### ============================================
+###
+### ✅ AL CAMBIAR DE ROL:
+### - Se pierden permisos del rol anterior
+### - Se ganan permisos del nuevo rol
+### - Se mantienen permisos adicionales
+### - Se mantienen permisos temporales
+###
+### ✅ PERMISOS ADICIONALES:
+### - Son permanentes
+### - No se pierden al cambiar de rol
+### - Solo para esa persona
+###
+### ✅ PERMISOS TEMPORALES:
+### - Tienen tiempo límite
+### - Se desactivan automáticamente
+### - No se pierden al cambiar de rol
+###
+### ⚠️ SEGURIDAD:
+### - Siempre usar contraseñas seguras
+### - Verificar permisos después de cambios
+### - Revisar permisos temporales regularmente
+###
+### ============================================
+

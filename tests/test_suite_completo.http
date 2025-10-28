@@ -1,0 +1,584 @@
+### ============================================
+### SUITE DE PRUEBAS AUTOMATIZADAS - SISTEMA OASIS
+### ============================================
+### Este archivo contiene pruebas end-to-end del sistema completo
+### Ejecutar en orden para validar toda la funcionalidad
+
+@baseUrl = http://localhost:9999/api/v1
+
+### ============================================
+### PRUEBA 1: CREACIÓN DE PERSONA PARA CLIENTE
+### ============================================
+
+### 1.1. Crear Persona para Cliente
+POST {{baseUrl}}/persona
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "genero": "M",
+  "telefono": "123456789",
+  "fechaNacimiento": "1990-01-15",
+  "direccion": "Av. Principal 123"
+}
+
+### Guardar el ID de la persona creada para el siguiente paso
+
+### ============================================
+### PRUEBA 2: CREACIÓN DE CLIENTE
+### ============================================
+
+### 2.1. Crear Cliente Nuevo
+# @name crearCliente
+POST {{baseUrl}}/cliente
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "TestPass123",
+  "idPersona": 1
+}
+
+### Respuesta esperada:
+# {
+#   "code": "200-OK",
+#   "result": {
+#     "idCliente": X,
+#     "correo": "cliente.test@oasis.com",
+#     "estadoCuenta": true,
+#     "intentosFallidos": 0
+#   }
+# }
+
+### ============================================
+### PRUEBA 3: LOGIN EXITOSO DE CLIENTE
+### ============================================
+
+### 3.1. Login Exitoso
+# @name loginCliente
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "TestPass123"
+}
+
+### Respuesta esperada: 200 OK con datos del cliente
+
+### ============================================
+### PRUEBA 4: INTENTOS FALLIDOS DE LOGIN
+### ============================================
+
+### 4.1. Intento Fallido 1/5
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "PasswordIncorrecta1"
+}
+
+### Respuesta esperada: "Le quedan 4 intentos"
+
+###
+### 4.2. Intento Fallido 2/5
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "PasswordIncorrecta2"
+}
+
+### Respuesta esperada: "Le quedan 3 intentos"
+
+###
+### 4.3. Intento Fallido 3/5
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "PasswordIncorrecta3"
+}
+
+### Respuesta esperada: "Le quedan 2 intentos"
+
+###
+### 4.4. Intento Fallido 4/5
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "PasswordIncorrecta4"
+}
+
+### Respuesta esperada: "Le quedan 1 intentos"
+
+###
+### 4.5. Intento Fallido 5/5 - BLOQUEO AUTOMÁTICO
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "PasswordIncorrecta5"
+}
+
+### Respuesta esperada: "CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada por múltiples intentos fallidos"
+
+### ============================================
+### PRUEBA 5: VERIFICAR BLOQUEO
+### ============================================
+
+### 5.1. Intentar Login con Contraseña Correcta (Debe Fallar por Bloqueo)
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "TestPass123"
+}
+
+### Respuesta esperada: "CUENTA_BLOQUEADA"
+
+###
+### 5.2. Verificar Estado de Cuenta
+GET {{baseUrl}}/bloqueo/cliente/1/info
+
+### Respuesta esperada:
+# {
+#   "result": {
+#     "activa": false,
+#     "bloqueada": true,
+#     "intentosFallidos": 5,
+#     "motivoBloqueo": "Bloqueado automáticamente por 5 intentos fallidos"
+#   }
+# }
+
+### ============================================
+### PRUEBA 6: DESBLOQUEO DE CUENTA
+### ============================================
+
+### 6.1. Desbloquear Cuenta
+POST {{baseUrl}}/bloqueo/cliente/1/desbloquear
+
+### Respuesta esperada: Cuenta desbloqueada exitosamente
+
+###
+### 6.2. Verificar Desbloqueo
+GET {{baseUrl}}/bloqueo/cliente/1/info
+
+### Respuesta esperada:
+# {
+#   "result": {
+#     "activa": true,
+#     "bloqueada": false,
+#     "intentosFallidos": 0
+#   }
+# }
+
+###
+### 6.3. Login Exitoso Después del Desbloqueo
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "TestPass123"
+}
+
+### Respuesta esperada: Login exitoso
+
+### ============================================
+### PRUEBA 7: CAMBIO DE CONTRASEÑA
+### ============================================
+
+### 7.1. Validar Contraseña Actual (Correcta)
+POST {{baseUrl}}/cliente/1/validate-password
+Content-Type: application/json
+
+{
+  "password": "TestPass123"
+}
+
+### Respuesta esperada: { "valid": true }
+
+###
+### 7.2. Validar Contraseña Actual (Incorrecta)
+POST {{baseUrl}}/cliente/1/validate-password
+Content-Type: application/json
+
+{
+  "password": "PasswordIncorrecta"
+}
+
+### Respuesta esperada: { "valid": false }
+
+###
+### 7.3. Cambiar Contraseña Exitosamente
+PUT {{baseUrl}}/cliente/1/password
+Content-Type: application/json
+
+{
+  "password": "NuevaPassword456"
+}
+
+### Respuesta esperada: Contraseña actualizada exitosamente
+
+###
+### 7.4. Intentar Reutilizar Contraseña Anterior (Debe Fallar)
+PUT {{baseUrl}}/cliente/1/password
+Content-Type: application/json
+
+{
+  "password": "TestPass123"
+}
+
+### Respuesta esperada: "La nueva contraseña ya fue usada anteriormente"
+
+###
+### 7.5. Login con Nueva Contraseña
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "NuevaPassword456"
+}
+
+### Respuesta esperada: Login exitoso
+
+### ============================================
+### PRUEBA 8: BLOQUEO MANUAL
+### ============================================
+
+### 8.1. Bloquear Cuenta Manualmente
+POST {{baseUrl}}/bloqueo/cliente/1/bloquear
+Content-Type: application/json
+
+{
+  "motivo": "Prueba de bloqueo manual por administrador"
+}
+
+### Respuesta esperada: Cuenta bloqueada exitosamente
+
+###
+### 8.2. Verificar Bloqueo Manual
+GET {{baseUrl}}/bloqueo/cliente/1/info
+
+### Respuesta esperada:
+# {
+#   "result": {
+#     "bloqueada": true,
+#     "motivoBloqueo": "Prueba de bloqueo manual por administrador"
+#   }
+# }
+
+###
+### 8.3. Intentar Login (Debe Fallar)
+POST {{baseUrl}}/cliente/login
+Content-Type: application/json
+
+{
+  "correo": "cliente.test@oasis.com",
+  "password": "NuevaPassword456"
+}
+
+### Respuesta esperada: "CUENTA_BLOQUEADA"
+
+### ============================================
+### PRUEBA 9: CREACIÓN DE PERSONA PARA ADMIN
+### ============================================
+
+### 9.1. Crear Persona para Admin
+POST {{baseUrl}}/persona
+Content-Type: application/json
+
+{
+  "nombre": "María",
+  "apellido": "García",
+  "genero": "F",
+  "telefono": "987654321",
+  "fechaNacimiento": "1985-05-20",
+  "direccion": "Calle Secundaria 456"
+}
+
+### ============================================
+### PRUEBA 10: CREACIÓN DE ADMINISTRADOR
+### ============================================
+
+### 10.1. Crear Admin con Rol "Tecnología"
+# @name crearAdmin
+POST {{baseUrl}}/admin
+Content-Type: application/json
+
+{
+  "correo": "admin.test@oasis.com",
+  "password": "AdminPass123",
+  "idPersona": 2,
+  "rol": {
+    "idRol": 2
+  }
+}
+
+### Respuesta esperada:
+# {
+#   "result": {
+#     "idAdmin": X,
+#     "correo": "admin.test@oasis.com",
+#     "estadoCuenta": true,
+#     "intentosFallidos": 0,
+#     "rol": {
+#       "idRol": 2,
+#       "rol": "Tecnología"
+#     }
+#   }
+# }
+
+### ============================================
+### PRUEBA 11: LOGIN DE ADMINISTRADOR
+### ============================================
+
+### 11.1. Login Exitoso de Admin
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test@oasis.com",
+  "password": "AdminPass123"
+}
+
+### Respuesta esperada: Login exitoso
+
+### ============================================
+### PRUEBA 12: PERMISOS DEL ADMINISTRADOR
+### ============================================
+
+### 12.1. Obtener Permisos Efectivos del Admin
+GET {{baseUrl}}/gestion-permisos/admin/1/permisos-efectivos
+
+### Respuesta esperada: Lista de permisos del rol "Tecnología"
+# - Editar usuario
+# - Desactivar usuario
+# - Ver lista de usuarios
+# - Revisar accesos de red
+
+###
+### 12.2. Verificar Permiso Específico (Editar Usuario - ID: 1)
+GET {{baseUrl}}/gestion-permisos/admin/1/tiene-permiso/1
+
+### Respuesta esperada: { "tienePermiso": true }
+
+###
+### 12.3. Verificar Permiso que NO Tiene (Registrar Cuentas - ID: 9)
+GET {{baseUrl}}/gestion-permisos/admin/1/tiene-permiso/9
+
+### Respuesta esperada: { "tienePermiso": false }
+
+### ============================================
+### PRUEBA 13: ASIGNAR PERMISO ADICIONAL
+### ============================================
+
+### 13.1. Asignar Permiso Adicional al Admin
+POST {{baseUrl}}/gestion-permisos/admin/1/permiso-adicional
+Content-Type: application/json
+
+{
+  "permisoId": 6,
+  "motivo": "Necesita acceso temporal para auditoría"
+}
+
+### Respuesta esperada: Permiso adicional asignado
+
+###
+### 13.2. Verificar Nuevo Permiso
+GET {{baseUrl}}/gestion-permisos/admin/1/tiene-permiso/6
+
+### Respuesta esperada: { "tienePermiso": true, "tipoPermiso": "ADICIONAL" }
+
+### ============================================
+### PRUEBA 14: ASIGNAR PERMISO TEMPORAL
+### ============================================
+
+### 14.1. Asignar Permiso Temporal (7 días)
+POST {{baseUrl}}/gestion-permisos/admin/1/permiso-temporal
+Content-Type: application/json
+
+{
+  "permisoId": 9,
+  "dias": 7,
+  "motivo": "Reemplazo temporal de contador"
+}
+
+### Respuesta esperada: Permiso temporal asignado
+
+###
+### 14.2. Verificar Permiso Temporal
+GET {{baseUrl}}/gestion-permisos/admin/1/tiene-permiso/9
+
+### Respuesta esperada: { "tienePermiso": true, "tipoPermiso": "TEMPORAL" }
+
+###
+### 14.3. Ver Todos los Permisos (ROL + ADICIONAL + TEMPORAL)
+GET {{baseUrl}}/gestion-permisos/admin/1/permisos-efectivos
+
+### Respuesta esperada: Lista con permisos de los 3 tipos
+
+### ============================================
+### PRUEBA 15: CAMBIO DE ROL
+### ============================================
+
+### 15.1. Obtener Resumen de Permisos Actual
+GET {{baseUrl}}/gestion-permisos/admin/1/resumen
+
+###
+### 15.2. Cambiar Rol del Admin (de Tecnología a Gerente)
+PUT {{baseUrl}}/admin/1/rol
+Content-Type: application/json
+
+{
+  "idRol": 1
+}
+
+### Respuesta esperada: Rol actualizado exitosamente
+
+###
+### 15.3. Limpiar Permisos Adicionales y Temporales
+DELETE {{baseUrl}}/gestion-permisos/admin/1/limpiar-todos-permisos
+
+### Respuesta esperada: Permisos limpiados exitosamente
+
+###
+### 15.4. Verificar Nuevos Permisos (Solo del Rol "Gerente")
+GET {{baseUrl}}/gestion-permisos/admin/1/permisos-efectivos
+
+### Respuesta esperada: Solo permisos del rol "Gerente"
+
+### ============================================
+### PRUEBA 16: BLOQUEO DE ADMIN POR INTENTOS FALLIDOS
+### ============================================
+
+### 16.1. Crear Otro Admin para Pruebas de Bloqueo
+POST {{baseUrl}}/admin
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "AdminTest456",
+  "idPersona": 3,
+  "rol": {
+    "idRol": 3
+  }
+}
+
+###
+### 16.2. Intentos Fallidos 1-5 (Bloqueo Automático)
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "incorrect1"
+}
+
+###
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "incorrect2"
+}
+
+###
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "incorrect3"
+}
+
+###
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "incorrect4"
+}
+
+###
+POST {{baseUrl}}/admin/login
+Content-Type: application/json
+
+{
+  "correo": "admin.test2@oasis.com",
+  "password": "incorrect5"
+}
+
+### Respuesta esperada (último intento): "CUENTA_BLOQUEADA"
+
+###
+### 16.3. Verificar Bloqueo del Admin
+GET {{baseUrl}}/bloqueo/admin/2/info
+
+### Respuesta esperada: bloqueada = true
+
+###
+### 16.4. Desbloquear Admin
+POST {{baseUrl}}/bloqueo/admin/2/desbloquear
+
+### ============================================
+### PRUEBA 17: HISTORIAL DE CONTRASEÑAS
+### ============================================
+
+### 17.1. Ver Historial de Contraseñas del Cliente
+GET {{baseUrl}}/historial-contrasena/cliente/1
+
+### Respuesta esperada: Lista de contraseñas anteriores
+
+###
+### 17.2. Ver Historial de Contraseñas del Admin
+GET {{baseUrl}}/historial-contrasena/admin/1
+
+### Respuesta esperada: Lista de contraseñas anteriores
+
+### ============================================
+### RESUMEN DE PRUEBAS
+### ============================================
+
+### ✅ PRUEBAS COMPLETADAS:
+### 1. Creación de Cliente ✓
+### 2. Login exitoso de Cliente ✓
+### 3. Intentos fallidos (1-5) ✓
+### 4. Bloqueo automático ✓
+### 5. Verificación de bloqueo ✓
+### 6. Desbloqueo de cuenta ✓
+### 7. Login después de desbloqueo ✓
+### 8. Validación de contraseña ✓
+### 9. Cambio de contraseña ✓
+### 10. Validación de historial de contraseñas ✓
+### 11. Bloqueo manual ✓
+### 12. Creación de Admin ✓
+### 13. Login de Admin ✓
+### 14. Verificación de permisos ✓
+### 15. Asignación de permisos adicionales ✓
+### 16. Asignación de permisos temporales ✓
+### 17. Cambio de rol ✓
+### 18. Limpieza de permisos ✓
+### 19. Bloqueo de Admin ✓
+### 20. Historial de contraseñas ✓
+
+### ============================================
+### NOTAS:
+### - Ajustar IDs según los registros creados
+### - Ejecutar en orden secuencial
+### - Verificar respuestas esperadas
+### - Algunos tests requieren crear Personas primero
+### ============================================
+

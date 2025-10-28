@@ -287,25 +287,101 @@ INSERT INTO Auto (modelo, marca, tipo) VALUES
 
 -- Insertar datos en la tabla Rol
 INSERT INTO Rol (rol) VALUES
-('Gerente'),
-('Tecnología'),
-('Seguridad'),
-('Contador'),
-('Auditor'),
-('Analista 1'),
-('Analista 2'),
-('Autorizador'),
-('Pasante TI'),
-('Usuario');
+('Gerente'),          -- ID: 1
+('Tecnología'),       -- ID: 2
+('Seguridad'),        -- ID: 3
+('Contador'),         -- ID: 4
+('Auditor'),          -- ID: 5
+('Pasante TI'),       -- ID: 6
+('Usuario'),          -- ID: 7
+('Agente de viajes'); -- ID: 8
 -- Insertar datos en la tabla Permiso
 INSERT INTO Permiso (permiso) VALUES
-('Administracion usuarios'),
-('Documentos internos'),
-('Correo'),
-('Consultas'),
-('Modificaciones'),
-('Registro cuentas'),
-('ABM Usuarios'),
-('Dashboard'),
-('Baja de comprobantes'),
-('Agente de viajes');
+('Editar usuario'),              -- ID: 1
+('Desactivar usuario'),          -- ID: 2
+('Ver lista de usuarios'),       -- ID: 3
+('Asignar roles'),               -- ID: 4
+('Revisar accesos de red'),      -- ID: 5
+('Subir documentos internos'),   -- ID: 6
+('Editar documentos internos'),  -- ID: 7
+('Ver documentos internos'),     -- ID: 8
+('Registrar cuentas'),           -- ID: 9
+('Editar cuentas'),              -- ID: 10
+('Eliminar comprobantes'),       -- ID: 11
+('Ver reportes contables'),      -- ID: 12
+('Crear solicitud de viaje');    -- ID: 13
+
+-- ============================================
+-- ASIGNACIÓN DE PERMISOS POR ROL
+-- ============================================
+-- Basado en la matriz de permisos del sistema
+
+-- ============================================
+-- ROL 1: GERENTE
+-- ============================================
+-- Permisos: Desactivar usuario, Ver lista usuarios, Revisar accesos red, Ver reportes contables
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(1, 2),  -- Desactivar usuario
+(1, 3),  -- Ver lista de usuarios
+(1, 5),  -- Revisar accesos de red
+(1, 12); -- Ver reportes contables
+
+-- ============================================
+-- ROL 2: TECNOLOGÍA
+-- ============================================
+-- Permisos: Editar usuario, Desactivar usuario, Ver lista usuarios, Revisar accesos red
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(2, 1),  -- Editar usuario
+(2, 2),  -- Desactivar usuario
+(2, 3),  -- Ver lista de usuarios
+(2, 5);  -- Revisar accesos de red
+
+-- ============================================
+-- ROL 3: SEGURIDAD
+-- ============================================
+-- Permisos: Asignar roles, Revisar accesos red
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(3, 4),  -- Asignar roles
+(3, 5);  -- Revisar accesos de red
+
+-- ============================================
+-- ROL 4: CONTADOR
+-- ============================================
+-- Permisos: Registrar cuentas, Editar cuentas, Eliminar comprobantes, Ver reportes contables
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(4, 9),   -- Registrar cuentas
+(4, 10),  -- Editar cuentas
+(4, 11),  -- Eliminar comprobantes
+(4, 12);  -- Ver reportes contables
+
+-- ============================================
+-- ROL 5: AUDITOR
+-- ============================================
+-- Permisos: Subir documentos internos, Editar documentos internos, Ver documentos internos
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(5, 6),  -- Subir documentos internos
+(5, 7),  -- Editar documentos internos
+(5, 8);  -- Ver documentos internos
+
+-- ============================================
+-- ROL 6: PASANTE TI
+-- ============================================
+-- Permisos: Ver documentos internos
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(6, 8);  -- Ver documentos internos
+
+-- ============================================
+-- ROL 7: USUARIO
+-- ============================================
+-- Permisos: Editar usuario, Desactivar usuario, Ver lista usuarios
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(7, 1),  -- Editar usuario
+(7, 2),  -- Desactivar usuario
+(7, 3);  -- Ver lista de usuarios
+
+-- ============================================
+-- ROL 8: AGENTE DE VIAJES
+-- ============================================
+-- Permisos: Crear solicitud de viaje
+INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
+(8, 13); -- Crear solicitud de viaje

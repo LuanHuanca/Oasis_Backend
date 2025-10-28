@@ -1,6 +1,7 @@
 package com.ucb.SIS213.Oasis.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "admin")
@@ -35,6 +36,18 @@ public class Admin {
     @ManyToOne
     @JoinColumn(name = "rol_idrol")
     private Rol rol;
+
+    @Column(name = "estadocuenta")
+    private Boolean estadoCuenta;
+
+    @Column(name = "intentosfallidos")
+    private Integer intentosFallidos;
+
+    @Column(name = "fechabloqueo")
+    private LocalDateTime fechaBloqueo;
+
+    @Column(name = "motivobloqueo")
+    private String motivoBloqueo;
 
     // Getters and setters
     public Long getIdAdmin() {
@@ -75,6 +88,38 @@ public class Admin {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public Boolean getEstadoCuenta() {
+        return estadoCuenta;
+    }
+
+    public void setEstadoCuenta(Boolean estadoCuenta) {
+        this.estadoCuenta = estadoCuenta;
+    }
+
+    public Integer getIntentosFallidos() {
+        return intentosFallidos;
+    }
+
+    public void setIntentosFallidos(Integer intentosFallidos) {
+        this.intentosFallidos = intentosFallidos;
+    }
+
+    public LocalDateTime getFechaBloqueo() {
+        return fechaBloqueo;
+    }
+
+    public void setFechaBloqueo(LocalDateTime fechaBloqueo) {
+        this.fechaBloqueo = fechaBloqueo;
+    }
+
+    public String getMotivoBloqueo() {
+        return motivoBloqueo;
+    }
+
+    public void setMotivoBloqueo(String motivoBloqueo) {
+        this.motivoBloqueo = motivoBloqueo;
     }
 
     // toString

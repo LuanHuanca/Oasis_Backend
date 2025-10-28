@@ -1,0 +1,263 @@
+### ============================================
+### SISTEMA DE BLOQUEO DE CUENTAS - TESTS
+### ============================================
+
+### ============================================
+### CLIENTES
+### ============================================
+
+### 1. Obtener información de bloqueo del cliente
+GET http://localhost:9999/api/v1/bloqueo/cliente/1/info
+Accept: application/json
+
+### 2. Bloquear cuenta de cliente manualmente
+POST http://localhost:9999/api/v1/bloqueo/cliente/1/bloquear
+Content-Type: application/json
+Accept: application/json
+
+{
+  "motivo": "Actividad sospechosa detectada"
+}
+
+### 3. Bloquear cuenta sin motivo específico
+POST http://localhost:9999/api/v1/bloqueo/cliente/1/bloquear
+Content-Type: application/json
+Accept: application/json
+
+{}
+
+### 4. Desbloquear cuenta de cliente
+POST http://localhost:9999/api/v1/bloqueo/admin/1/desbloquear
+Accept: application/json
+
+### 5. Verificar información después de desbloqueo
+GET http://localhost:9999/api/v1/bloqueo/cliente/1/info
+Accept: application/json
+
+### ============================================
+### ADMINISTRADORES
+### ============================================
+
+### 6. Obtener información de bloqueo del admin
+GET http://localhost:9999/api/v1/bloqueo/admin/1/info
+Accept: application/json
+
+### 7. Bloquear cuenta de admin manualmente
+POST http://localhost:9999/api/v1/bloqueo/admin/1/bloquear
+Content-Type: application/json
+Accept: application/json
+
+{
+  "motivo": "Violación de políticas de seguridad"
+}
+
+### 8. Desbloquear cuenta de admin
+POST http://localhost:9999/api/v1/bloqueo/admin/1/desbloquear
+Accept: application/json
+
+### 9. Verificar información después de desbloqueo
+GET http://localhost:9999/api/v1/bloqueo/admin/1/info
+Accept: application/json
+
+### ============================================
+### PRUEBAS DE FLUJO COMPLETO
+### ============================================
+
+### ESCENARIO 1: Cliente bloqueado automáticamente por intentos fallidos
+### -------------------------------------------------------------------
+### Paso 1: Verificar estado inicial
+GET http://localhost:9999/api/v1/bloqueo/cliente/1/info
+Accept: application/json
+
+###
+### Paso 2: Intentar login con contraseña incorrecta (5 veces)
+### NOTA: Esto se debe hacer desde el endpoint de login
+POST http://localhost:9999/api/v1/cliente/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "cliente@test.com",
+  "password": "password_incorrecta"
+}
+
+###
+### Paso 3: Verificar que la cuenta se bloqueó
+GET http://localhost:9999/api/v1/bloqueo/cliente/1/info
+Accept: application/json
+
+###
+### Paso 4: Intentar login después del bloqueo (debe fallar)
+POST http://localhost:9999/api/v1/cliente/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "cliente@test.com",
+  "password": "password_correcta"
+}
+
+###
+### Paso 5: Desbloquear cuenta
+POST http://localhost:9999/api/v1/bloqueo/cliente/1/desbloquear
+Accept: application/json
+
+###
+### Paso 6: Verificar desbloqueo
+GET http://localhost:9999/api/v1/bloqueo/cliente/1/info
+Accept: application/json
+
+###
+### Paso 7: Login exitoso después de desbloqueo
+POST http://localhost:9999/api/v1/cliente/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "cliente@test.com",
+  "password": "password_correcta"
+}
+
+### ============================================
+### ESCENARIO 2: Admin bloqueado manualmente
+### ============================================
+
+### Paso 1: Bloquear admin manualmente
+POST http://localhost:9999/api/v1/bloqueo/admin/2/bloquear
+Content-Type: application/json
+Accept: application/json
+
+{
+  "motivo": "Sospecha de compromiso de cuenta"
+}
+
+###
+### Paso 2: Verificar bloqueo
+GET http://localhost:9999/api/v1/bloqueo/admin/2/info
+Accept: application/json
+
+###
+### Paso 3: Intentar login (debe fallar con mensaje de cuenta bloqueada)
+POST http://localhost:9999/api/v1/admin/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "admin@test.com",
+  "password": "password_correcta"
+}
+
+###
+### Paso 4: Desbloquear cuenta
+POST http://localhost:9999/api/v1/bloqueo/admin/2/desbloquear
+Accept: application/json
+
+###
+### Paso 5: Login exitoso
+POST http://localhost:9999/api/v1/admin/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "correo": "admin@test.com",
+  "password": "password_correcta"
+}
+
+### ============================================
+### RESPUESTAS ESPERADAS
+### ============================================
+
+### Cuenta Activa (info):
+# {
+#   "code": "INFO-200",
+#   "message": "Información de bloqueo obtenida exitosamente",
+#   "result": {
+#     "clienteId": 1,
+#     "activa": true,
+#     "bloqueada": false,
+#     "intentosFallidos": 0,
+#     "fechaBloqueo": null,
+#     "motivoBloqueo": "N/A"
+#   }
+# }
+
+### Cuenta Bloqueada (info):
+# {
+#   "code": "INFO-200",
+#   "message": "Información de bloqueo obtenida exitosamente",
+#   "result": {
+#     "clienteId": 1,
+#     "activa": false,
+#     "bloqueada": true,
+#     "intentosFallidos": 5,
+#     "fechaBloqueo": "2025-10-28T01:30:00",
+#     "motivoBloqueo": "Bloqueado automáticamente por 5 intentos fallidos"
+#   }
+# }
+
+### Login Fallido - Cuenta Bloqueada:
+# {
+#   "code": "LOGIN-500",
+#   "message": "CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada. Por favor, contacte a soporte o envíe un correo a soporte@oasis.com para su desbloqueo. Motivo: Bloqueado automáticamente por 5 intentos fallidos",
+#   "result": null
+# }
+
+### Login Fallido - Contraseña Incorrecta (con intentos restantes):
+# {
+#   "code": "LOGIN-500",
+#   "message": "PASSWORD_INCORRECTO: Contraseña incorrecta. Le quedan 3 intentos.",
+#   "result": null
+# }
+
+### Bloqueo Exitoso:
+# {
+#   "code": "BLOQUEO-200",
+#   "message": "Cuenta de cliente bloqueada exitosamente",
+#   "result": {
+#     "clienteId": 1,
+#     "motivo": "Actividad sospechosa detectada",
+#     "bloqueado": true
+#   }
+# }
+
+### Desbloqueo Exitoso:
+# {
+#   "code": "DESBLOQUEO-200",
+#   "message": "Cuenta de cliente desbloqueada exitosamente",
+#   "result": {
+#     "clienteId": 1,
+#     "bloqueado": false,
+#     "intentosFallidos": 0
+#   }
+# }
+
+### ============================================
+### NOTAS IMPORTANTES
+### ============================================
+
+# 1. BLOQUEO AUTOMÁTICO:
+#    - Se activa después de 5 intentos fallidos de login
+#    - El sistema incrementa automáticamente el contador
+#    - La cuenta se bloquea automáticamente al 5to intento
+#    - Debe desbloquearse manualmente
+
+# 2. BLOQUEO MANUAL:
+#    - Puede ser realizado por un administrador
+#    - Se puede especificar un motivo personalizado
+#    - Útil para casos de seguridad
+
+# 3. DESBLOQUEO:
+#    - Reinicia el contador de intentos a 0
+#    - Limpia la fecha y motivo de bloqueo
+#    - La cuenta vuelve a estado activo
+
+# 4. MENSAJES AL USUARIO:
+#    - CUENTA_BLOQUEADA: Indica que la cuenta está bloqueada
+#    - PASSWORD_INCORRECTO: Indica contraseña incorrecta + intentos restantes
+#    - El frontend debe manejar estos prefijos para mostrar mensajes apropiados
+
+# 5. INTEGRACIÓN FRONTEND:
+#    - Mostrar contador de intentos restantes
+#    - Mostrar mensaje de contacto a soporte cuando esté bloqueado
+#    - Enviar email/notificación cuando una cuenta se bloquea
+

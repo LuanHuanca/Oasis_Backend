@@ -19,12 +19,15 @@ public class ClienteBl {
     private ClienteDao clienteDao;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private HistorialContrasenaService historialService;
+    private BloqueoCuentaService bloqueoCuentaService;
 
     @Autowired
-    public ClienteBl(ClienteDao clienteDao, BCryptPasswordEncoder bCryptPasswordEncoder, HistorialContrasenaService historialService) {
+    public ClienteBl(ClienteDao clienteDao, BCryptPasswordEncoder bCryptPasswordEncoder, 
+                     HistorialContrasenaService historialService, BloqueoCuentaService bloqueoCuentaService) {
         this.clienteDao = clienteDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.historialService = historialService;
+        this.bloqueoCuentaService = bloqueoCuentaService;
     }
 
     public List<Cliente> getAllCliente() {
@@ -51,6 +54,15 @@ public class ClienteBl {
         String password = cliente.getPassword() + "Aqm,24Dla";
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         cliente.setPassword(hashedPassword);
+        
+        // Inicializar campos de bloqueo de cuenta
+        if (cliente.getEstadoCuenta() == null) {
+            cliente.setEstadoCuenta(true); // Cuenta activa por defecto
+        }
+        if (cliente.getIntentosFallidos() == null) {
+            cliente.setIntentosFallidos(0);
+        }
+        
         System.out.println("Contraseña: " + cliente.getPassword());
         return clienteDao.save(cliente);
     }
@@ -63,14 +75,33 @@ public class ClienteBl {
             throw new UserException("Correo o contraseña incorrectos");
         }
         
+        // ✅ VERIFICAR SI LA CUENTA ESTÁ BLOQUEADA
+        if (cliente.getEstadoCuenta() != null && !cliente.getEstadoCuenta()) {
+            throw new UserException("CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada. " +
+                    "Por favor, contacte a soporte o envíe un correo a soporte@oasis.com para su desbloqueo. " +
+                    "Motivo: " + (cliente.getMotivoBloqueo() != null ? cliente.getMotivoBloqueo() : "No especificado"));
+        }
+        
         // Obtener la contraseña almacenada del cliente
         String hashedPassword = cliente.getPassword();
         String mypassword = password + "Aqm,24Dla";
         
         // Verificar si la contraseña proporcionada coincide con la contraseña almacenada después de ser hasheada
         if (!bCryptPasswordEncoder.matches(mypassword, hashedPassword)) {
-            throw new UserException("Correo o contraseña incorrectos");
+            // ❌ Contraseña incorrecta - registrar intento fallido
+            BloqueoCuentaService.IntentosResult resultado = bloqueoCuentaService.registrarIntentoFallidoCliente(cliente.getIdCliente());
+            
+            if (resultado.isBloqueado()) {
+                throw new UserException("CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada por múltiples intentos fallidos. " +
+                        "Contacte a soporte@oasis.com para desbloquearla.");
+            } else {
+                throw new UserException("PASSWORD_INCORRECTO: Contraseña incorrecta. Le quedan " + 
+                        resultado.getIntentosRestantes() + " intentos.");
+            }
         }
+        
+        // ✅ Login exitoso - reiniciar intentos
+        bloqueoCuentaService.reiniciarIntentosCliente(cliente.getIdCliente());
         
         // No es necesario volver a hashear la contraseña al hacer el login
         cliente.setPassword(null);
