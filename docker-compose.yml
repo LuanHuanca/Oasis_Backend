@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: oasis-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-oasis}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./BDD/BD_OASIS.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./BDD/datos.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    networks:
+      - oasis-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Backend Spring Boot
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oasis-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-oasis}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-smtp.gmail.com}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      GOOGLE_GENERATIVEAI_API_KEY: ${GOOGLE_GENERATIVEAI_API_KEY}
+      SERVER_PORT: 9999
+    ports:
+      - "${BACKEND_PORT:-9999}:9999"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - oasis-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9999/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (se agregará cuando proporciones la información)
+  # frontend:
+  #   build:
+  #     context: ../Oasis_Frontend  # Ajusta la ruta según tu estructura
+  #     dockerfile: Dockerfile
+  #   container_name: oasis-frontend
+  #   ports:
+  #     - "${FRONTEND_PORT:-3000}:3000"
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:${BACKEND_PORT:-9999}
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - oasis-network
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  oasis-network:
+    driver: bridge
+

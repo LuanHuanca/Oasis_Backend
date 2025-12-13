@@ -33,11 +33,11 @@ PUT http://localhost:9999/api/v1/rol-permiso/rol/1/reemplazar
 Content-Type: application/json
 
 {
-    "permisoIds": [2, 3, 5]
+    "permisoIds": [4]
 }
 
 ### Eliminar un permiso específico de un rol
-DELETE http://localhost:9999/api/v1/rol-permiso/rol/1/permiso/1
+DELETE http://localhost:9999/api/v1/rol-permiso/rol/1/permiso/5
 
 ### ============================================
 ### 2. GESTIÓN DE PERMISOS TEMPORALES

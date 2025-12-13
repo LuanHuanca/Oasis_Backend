@@ -33,8 +33,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "correo": "luan.huanca@tuguia.bo",
-  "password": "NuevaContraseña123"
+  "correo": "luis.huanca@tuguia.bo",
+  "password": "luish73037172"
 }
 
 ###
@@ -57,7 +57,7 @@ Content-Type: application/json
 
 ###
 
-### Actualizar el rol de un admin
+## #Actualizar el rol de un admin
 PUT http://localhost:9999/api/v1/admin/updateRole/1
 Content-Type: application/json
 

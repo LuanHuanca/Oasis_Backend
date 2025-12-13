@@ -75,7 +75,7 @@ public class AdminAPI {
         String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@tuguia.bo";
 
         // Crear contraseña de admin
-        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono() + "Aqm,24Dla";
+        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono();
 
         // Recuperar Rol
         Integer rolId = (Integer) requestBody.get("rolId");

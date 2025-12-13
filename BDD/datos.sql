@@ -293,8 +293,8 @@ INSERT INTO Rol (rol) VALUES
 ('Contador'),         -- ID: 4
 ('Auditor'),          -- ID: 5
 ('Pasante TI'),       -- ID: 6
-('Usuario'),          -- ID: 7
-('Agente de viajes'); -- ID: 8
+('Agente de viajes'), -- ID: 7
+('Usuario'),          -- ID: 8
 -- Insertar datos en la tabla Permiso
 INSERT INTO Permiso (permiso) VALUES
 ('Editar usuario'),              -- ID: 1
@@ -341,8 +341,7 @@ INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
 -- ============================================
 -- Permisos: Asignar roles, Revisar accesos red
 INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
-(3, 4),  -- Asignar roles
-(3, 5);  -- Revisar accesos de red
+(3, 4);  -- Asignar roles
 
 -- ============================================
 -- ROL 4: CONTADOR
@@ -371,17 +370,8 @@ INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
 (6, 8);  -- Ver documentos internos
 
 -- ============================================
--- ROL 7: USUARIO
--- ============================================
--- Permisos: Editar usuario, Desactivar usuario, Ver lista usuarios
-INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
-(7, 1),  -- Editar usuario
-(7, 2),  -- Desactivar usuario
-(7, 3);  -- Ver lista de usuarios
-
--- ============================================
--- ROL 8: AGENTE DE VIAJES
+-- ROL 7: AGENTE DE VIAJES
 -- ============================================
 -- Permisos: Crear solicitud de viaje
 INSERT INTO RolPermiso (rol_idrol, permiso_idpermiso) VALUES
-(8, 13); -- Crear solicitud de viaje
+(7, 13); -- Crear solicitud de viaje
