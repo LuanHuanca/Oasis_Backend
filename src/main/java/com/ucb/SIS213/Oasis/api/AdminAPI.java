@@ -104,9 +104,21 @@ public class AdminAPI {
     private Persona convertMapToPersona(Map<String, Object> personaMap) {
         // Implementa la lógica para convertir el mapa en un objeto Persona
         Persona persona = new Persona();
-        Integer idPersonaInteger = (Integer) personaMap.get("idPersona");
-        Long idPersonaLong = Long.valueOf(idPersonaInteger.longValue());
+        
+        // Manejar idPersona que puede venir como Integer, Long, o Number
+        Object idPersonaObj = personaMap.get("idPersona");
+        Long idPersonaLong = null;
+        if (idPersonaObj != null) {
+            if (idPersonaObj instanceof Integer) {
+                idPersonaLong = Long.valueOf(((Integer) idPersonaObj).longValue());
+            } else if (idPersonaObj instanceof Long) {
+                idPersonaLong = (Long) idPersonaObj;
+            } else if (idPersonaObj instanceof Number) {
+                idPersonaLong = ((Number) idPersonaObj).longValue();
+            }
+        }
         persona.setIdPersona(idPersonaLong);
+        
         persona.setNombre((String) personaMap.get("nombre"));
         persona.setApellidoP((String) personaMap.get("apellidoP"));
         persona.setApellidoM((String) personaMap.get("apellidoM"));

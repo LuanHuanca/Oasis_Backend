@@ -294,7 +294,8 @@ INSERT INTO Rol (rol) VALUES
 ('Auditor'),          -- ID: 5
 ('Pasante TI'),       -- ID: 6
 ('Agente de viajes'), -- ID: 7
-('Usuario'),          -- ID: 8
+('Usuario');          -- ID: 8
+
 -- Insertar datos en la tabla Permiso
 INSERT INTO Permiso (permiso) VALUES
 ('Editar usuario'),              -- ID: 1
