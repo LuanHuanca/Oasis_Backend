@@ -21,14 +21,24 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Parsear los orígenes permitidos desde la variable de entorno
-        // Puede ser una lista separada por comas
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        origins.forEach(origin -> config.addAllowedOrigin(origin.trim()));
+        // Si se especifica "*", permitir cualquier origen (útil para ngrok, EC2, etc.)
+        if ("*".equals(allowedOrigins.trim())) {
+            config.addAllowedOriginPattern("*"); // Usar addAllowedOriginPattern para permitir cualquier origen
+        } else {
+            // Parsear los orígenes permitidos desde la variable de entorno
+            // Puede ser una lista separada por comas
+            List<String> origins = Arrays.asList(allowedOrigins.split(","));
+            origins.forEach(origin -> {
+                String trimmedOrigin = origin.trim();
+                if (!trimmedOrigin.isEmpty()) {
+                    config.addAllowedOrigin(trimmedOrigin);
+                }
+            });
+            config.setAllowCredentials(true); // Permitir credenciales solo si no es "*"
+        }
         
         config.addAllowedHeader("*"); // Permitir cualquier encabezado
         config.addAllowedMethod("*"); // Permitir cualquier método (GET, POST, etc.)
-        config.setAllowCredentials(true); // Permitir credenciales
         
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
