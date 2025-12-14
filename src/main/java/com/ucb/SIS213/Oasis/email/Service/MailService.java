@@ -24,13 +24,27 @@ public class MailService {
     public void sendMail(String mail, MailStructure mailStructure) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom(fromMail);
         helper.setTo(mail);
         helper.setSubject(mailStructure.getSubject());
 
-        helper.setText(mailStructure.getMessage(), false);
-
+        // Detectar si el mensaje contiene HTML
+        String messageContent = mailStructure.getMessage();
+        boolean isHtml = messageContent != null && 
+                         (messageContent.contains("<html") || 
+                          messageContent.contains("<h1") || 
+                          messageContent.contains("<h2") || 
+                          messageContent.contains("<p>") || 
+                          messageContent.contains("<ul>") || 
+                          messageContent.contains("<li>") ||
+                          messageContent.contains("<div>") ||
+                          messageContent.contains("<br>") ||
+                          messageContent.contains("<br/>") ||
+                          messageContent.contains("<strong>") ||
+                          messageContent.contains("<img"));
+        
+        helper.setText(messageContent, isHtml);
 
         mailSender.send(message);
     }
