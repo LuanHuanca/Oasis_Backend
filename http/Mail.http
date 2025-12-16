@@ -15,7 +15,7 @@ Accept: application/json
 ###
 
 ### Enviar correo HTML (Railway)
-POST https://oasisbackend-production-eb4d.up.railway.app/mail/send/luanhuancam@gmail.com
+POST https://oasisbackend-production-eb4d.up.railway.app/mail/send/luis.huanca.m@ucb.edu.bo
 Content-Type: application/json
 Accept: application/json
 

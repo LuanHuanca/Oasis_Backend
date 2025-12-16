@@ -132,8 +132,8 @@ public class AdminBl {
                 throw new UserException("CUENTA_BLOQUEADA: Su cuenta ha sido bloqueada por múltiples intentos fallidos. " +
                         "Contacte a soporte@oasis.com para desbloquearla.");
             } else {
-                throw new UserException("PASSWORD_INCORRECTO: Contraseña incorrecta. Le quedan " + 
-                        resultado.getIntentosRestantes() + " intentos.");
+                // No revelar información sobre intentos restantes para evitar que atacantes sepan que el correo existe
+                throw new UserException("Correo o contraseña incorrectos");
             }
         }
 

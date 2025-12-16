@@ -43,9 +43,25 @@ public class SendGridMailService {
     }
 
     public void sendMail(String to, MailStructure mailStructure) throws MessagingException {
-        // Solo usar SendGrid si está configurado
-        if (!"sendgrid".equalsIgnoreCase(mailProvider) || sendGridApiKey == null || sendGridApiKey.isEmpty()) {
-            throw new MessagingException("SendGrid no está configurado. Configure SENDGRID_API_KEY y MAIL_PROVIDER=sendgrid");
+        // Validar configuración de SendGrid
+        if (!"sendgrid".equalsIgnoreCase(mailProvider)) {
+            throw new MessagingException("MAIL_PROVIDER no está configurado como 'sendgrid'. Configure MAIL_PROVIDER=sendgrid");
+        }
+        
+        if (sendGridApiKey == null || sendGridApiKey.isEmpty() || sendGridApiKey.trim().isEmpty()) {
+            LOGGER.error("SENDGRID_API_KEY no está configurada o está vacía");
+            throw new MessagingException("SENDGRID_API_KEY no está configurada. Por favor, configure la variable de entorno SENDGRID_API_KEY con una API key válida de SendGrid.");
+        }
+        
+        if (fromEmail == null || fromEmail.isEmpty() || fromEmail.trim().isEmpty()) {
+            LOGGER.error("SENDGRID_FROM_EMAIL no está configurado o está vacío");
+            throw new MessagingException("SENDGRID_FROM_EMAIL no está configurado. Por favor, configure la variable de entorno SENDGRID_FROM_EMAIL con el email remitente verificado en SendGrid.");
+        }
+        
+        // Validar formato básico del email remitente
+        if (!fromEmail.contains("@")) {
+            LOGGER.error("SENDGRID_FROM_EMAIL tiene formato inválido: {}", fromEmail);
+            throw new MessagingException("SENDGRID_FROM_EMAIL tiene formato inválido. Debe ser un email válido verificado en SendGrid.");
         }
 
         try {
@@ -53,6 +69,9 @@ public class SendGridMailService {
             LOGGER.info("Correo remitente: {}", fromEmail);
             LOGGER.info("Correo destinatario: {}", to);
             LOGGER.info("Asunto: {}", mailStructure.getSubject());
+            LOGGER.debug("API Key configurada: {} (longitud: {})", 
+                        sendGridApiKey != null && !sendGridApiKey.isEmpty() ? "Sí" : "No",
+                        sendGridApiKey != null ? sendGridApiKey.length() : 0);
 
             // Construir el cuerpo de la petición según formato SendGrid
             Map<String, Object> requestBody = new HashMap<>();
@@ -125,7 +144,22 @@ public class SendGridMailService {
                     String errorBody = response.body() != null ? response.body().string() : "Sin detalles";
                     LOGGER.error("Error al enviar correo vía SendGrid. Código: {}, Respuesta: {}", 
                                 response.code(), errorBody);
-                    throw new MessagingException("Error al enviar correo: " + errorBody);
+                    
+                    // Mensajes de error más específicos según el código HTTP
+                    String userFriendlyMessage;
+                    if (response.code() == 401) {
+                        userFriendlyMessage = "Error de autenticación con SendGrid. La API key es inválida, expirada o revocada. " +
+                                             "Por favor, verifica que SENDGRID_API_KEY esté correctamente configurada con una API key válida de SendGrid. " +
+                                             "Puedes generar una nueva API key en: https://app.sendgrid.com/settings/api_keys";
+                    } else if (response.code() == 403) {
+                        userFriendlyMessage = "Acceso denegado por SendGrid. Verifica los permisos de tu API key y que el email remitente esté verificado.";
+                    } else if (response.code() == 400) {
+                        userFriendlyMessage = "Solicitud inválida a SendGrid. Verifica el formato del email y el contenido del mensaje.";
+                    } else {
+                        userFriendlyMessage = "Error al enviar correo vía SendGrid (Código: " + response.code() + "): " + errorBody;
+                    }
+                    
+                    throw new MessagingException(userFriendlyMessage);
                 }
 
                 LOGGER.info("Respuesta de SendGrid: Código {}", response.code());
