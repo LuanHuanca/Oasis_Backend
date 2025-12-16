@@ -3,13 +3,13 @@
 ### ============================================
 
 ### Obtener todos los admins (Railway)
-GET https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin
+GET https://localhost:9999/api/v1/admin
 Accept: application/json
 
 ###
 
 ### Obtener un admin por su ID (Railway)
-GET https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin/2
+GET https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin/11
 Accept: application/json
 
 ###
@@ -47,10 +47,10 @@ POST http://localhost:9999/api/v1/admin/create
 Content-Type: application/json
 
 {
-  "correo": "admin1@example.com",
-  "password": "password1",
+  "correo": "manuel.delgadillo@tuguia.bo",
+  "password": "Manu123456789.",
   "rol": {
-    "idRol": 1
+    "idRol": 3
   },
   "persona": {
     "idPersona": 1
@@ -65,11 +65,22 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "correo": "luis.huanca@tuguia.bo",
-  "password": "luish73037172"
+  "correo": "manu.delgadillo@tuguia.bo",
+  "password": "manu123456789."
 }
 
-###
+POST http://localhost:9999/api/v1/bloqueo/admin/11/desbloquear
+Content-Type: application/json
+Accept: application/json
+{
+  "motivo": "Actividad sospechosa detectada"
+}
+
+GET http://localhost:9999/api/v1/bloqueo/admin/11/info
+Accept: application/json
+
+{
+}
 
 ### Actualizar un admin (Local)
 PUT https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin/update
@@ -77,8 +88,8 @@ Content-Type: application/json
 
 {
   "idAdmin": 1,
-  "correo": "luan.huanca@tuguia.bo",
-  "password": "Luan123456789.",
+  "correo": "manu.delgadillo@tuguia.bo",
+  "password": "manu123456789.",
   "rol": {
     "idRol": 3
   },
@@ -90,7 +101,7 @@ Content-Type: application/json
 ###
 
 ### Actualizar el rol de un admin (Railway)
-PUT https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin/updateRole/1
+PUT https://localhost:9999/api/v1/admin/updateRole/11
 Content-Type: application/json
 
 {
@@ -100,7 +111,7 @@ Content-Type: application/json
 ###
 
 ### Actualizar el rol de un admin (Local)
-PUT http://localhost:9999/api/v1/admin/updateRole/1
+PUT http://localhost:9999/api/v1/admin/updateRole/10
 Content-Type: application/json
 
 {
@@ -110,5 +121,5 @@ Content-Type: application/json
 ###
 
 ### Eliminar un admin (Local)
-DELETE http://localhost:9999/api/v1/admin/delete/4
+DELETE http://localhost:9999/api/v1/admin/delete/
 Accept: application/json

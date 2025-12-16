@@ -45,8 +45,21 @@ public class AdminBl {
     }
 
     public Admin createAdmin(Admin admin) {
+        // Normalizar correo a minúsculas para consistencia
+        if (admin.getCorreo() != null) {
+            admin.setCorreo(admin.getCorreo().trim().toLowerCase());
+        }
+        
+        // Validar que la contraseña no esté vacía
+        if (admin.getPassword() == null || admin.getPassword().trim().isEmpty()) {
+            throw new RuntimeException("La contraseña no puede estar vacía");
+        }
+        
+        // Limpiar y normalizar la contraseña antes de aplicar el salt
+        String passwordClean = admin.getPassword().trim();
+        
         // Aplicar salt a la contraseña (consistente con login)
-        String password = admin.getPassword() + "Aqm,24Dla";
+        String password = passwordClean + "Aqm,24Dla";
         String hashedPassword = bCryptPasswordEncoder.encode(password);
         admin.setPassword(hashedPassword);
         
@@ -62,8 +75,24 @@ public class AdminBl {
     }
 
     public Admin login(String correo, String password) throws UserException {
-        // Encontrar al admin por correo
-        Admin admin = adminDao.findByCorreo(correo);
+        // Normalizar correo y contraseña (trim y lowercase para consistencia)
+        if (correo != null) {
+            correo = correo.trim().toLowerCase();
+        }
+        if (password != null) {
+            password = password.trim();
+        }
+
+        // Validar que correo y password no estén vacíos
+        if (correo == null || correo.isEmpty()) {
+            throw new UserException("El correo es requerido");
+        }
+        if (password == null || password.isEmpty()) {
+            throw new UserException("La contraseña es requerida");
+        }
+
+        // Encontrar al admin por correo (case-insensitive)
+        Admin admin = adminDao.findByCorreoIgnoreCase(correo);
 
         if (admin == null) {
             throw new UserException("Correo o contraseña incorrectos");
@@ -78,10 +107,24 @@ public class AdminBl {
 
         // Obtener la contraseña almacenada del admin
         String hashedPassword = admin.getPassword();
-        String mypassword = password +"Aqm,24Dla";
+        
+        // Validar que la contraseña almacenada no sea null
+        if (hashedPassword == null || hashedPassword.isEmpty()) {
+            throw new UserException("Error en la configuración de la cuenta. Contacte a soporte.");
+        }
 
-        // Verificar si la contraseña proporcionada coincide con la contraseña almacenada después de ser hasheada
-        if (!bCryptPasswordEncoder.matches(mypassword, hashedPassword)) {
+        // Aplicar el mismo salt que se usó al crear la contraseña
+        String passwordWithSalt = password + "Aqm,24Dla";
+
+        // Log de depuración (NO en producción con datos reales)
+        // System.out.println("DEBUG - Password recibido: [" + password + "]");
+        // System.out.println("DEBUG - Password con salt: [" + passwordWithSalt + "]");
+        // System.out.println("DEBUG - Hash almacenado: [" + hashedPassword.substring(0, Math.min(20, hashedPassword.length())) + "...]");
+
+        // Verificar si la contraseña proporcionada coincide con la contraseña almacenada
+        boolean passwordMatches = bCryptPasswordEncoder.matches(passwordWithSalt, hashedPassword);
+        
+        if (!passwordMatches) {
             // ❌ Contraseña incorrecta - registrar intento fallido
             BloqueoCuentaService.IntentosResult resultado = bloqueoCuentaService.registrarIntentoFallidoAdmin(admin.getIdAdmin());
             

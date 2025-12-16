@@ -14,6 +14,13 @@ public interface ClienteDao extends JpaRepository<Cliente, Long> {
             nativeQuery = true)
     List<Cliente> findLabelsByUserId(Long userId);
 
+    // Búsqueda case-insensitive del correo
+    @Query(value = "SELECT * FROM cliente WHERE LOWER(correo) = LOWER(?1)",
+            nativeQuery = true)
+    Cliente findByCorreoIgnoreCase(String correo);
+    
+    // Mantener el método original para compatibilidad (deprecated - usar findByCorreoIgnoreCase)
+    @Deprecated
     public Cliente findByCorreo(String correo);
 
 

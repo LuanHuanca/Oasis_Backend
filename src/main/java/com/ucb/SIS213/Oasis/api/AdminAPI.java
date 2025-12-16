@@ -71,18 +71,22 @@ public class AdminAPI {
         // Obtener id de la persona
         Long idPersona = persona.getIdPersona();
 
-        // Crear correo de admin
-        String correoAdmin = persona.getNombre() + "." + persona.getApellidoP() + "@tuguia.bo";
+        // Crear correo de admin (normalizar a minúsculas para consistencia)
+        String correoAdmin = (persona.getNombre() + "." + persona.getApellidoP() + "@tuguia.bo").toLowerCase().trim();
 
-        // Crear contraseña de admin
-        String contrasenaAdmin = persona.getNombre() + persona.getApellidoP().substring(0, 1) + persona.getTelefono();
+        // Crear contraseña de admin (limpiar espacios y normalizar)
+        String nombre = persona.getNombre() != null ? persona.getNombre().trim() : "";
+        String apellidoP = persona.getApellidoP() != null ? persona.getApellidoP().trim() : "";
+        String telefono = persona.getTelefono() != null ? persona.getTelefono().trim() : "";
+        String contrasenaAdmin = nombre + (apellidoP.length() > 0 ? apellidoP.substring(0, 1) : "") + telefono;
 
         // Recuperar Rol
         Integer rolId = (Integer) requestBody.get("rolId");
 
         LOGGER.info("PersonaID: " + idPersona);
-        LOGGER.info("Correo: " + correoAdmin);
-        LOGGER.info("Contraseña: " + contrasenaAdmin);
+        LOGGER.info("Correo generado (normalizado): " + correoAdmin);
+        LOGGER.info("Contraseña generada: " + contrasenaAdmin);
+        LOGGER.info("Longitud contraseña: " + contrasenaAdmin.length());
         LOGGER.info("Rol ID: " + rolId);
 
         Admin adminCreado = new Admin();

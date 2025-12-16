@@ -77,8 +77,12 @@ public class AuditoriaAPI {
         Auditoria auditoriaCreado;
         try {
             String correo = auditoria.getCorreo();
-            Admin admin = adminDao.findByCorreo(correo);
-            Cliente cliente = clienteDao.findByCorreo(correo);
+            // Normalizar correo a minúsculas para búsqueda consistente
+            if (correo != null) {
+                correo = correo.trim().toLowerCase();
+            }
+            Admin admin = adminDao.findByCorreoIgnoreCase(correo);
+            Cliente cliente = clienteDao.findByCorreo(correo); // TODO: Actualizar cuando ClienteDao tenga findByCorreoIgnoreCase
 
             if (admin != null) {
                 auditoria.setAdminId(admin.getIdAdmin().intValue());
