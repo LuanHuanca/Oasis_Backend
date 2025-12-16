@@ -87,14 +87,14 @@ PUT https://oasisbackend-production-eb4d.up.railway.app/api/v1/admin/update
 Content-Type: application/json
 
 {
-  "idAdmin": 4,
-  "correo": "camilo.mendez@tuguia.bo",
-  "password": "luh12345678910",
+  "idAdmin": 2,
+  "correo": "Carlos.Cambero@tuguia.bo",
+  "password": "Carlos123456789.",
   "rol": {
-    "idRol": 5
+    "idRol": 1
   },
   "persona": {
-    "idPersona": 4
+    "idPersona": 2
   }
 }
 

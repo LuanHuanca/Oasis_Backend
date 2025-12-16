@@ -28,7 +28,7 @@ public class MailController {
     private MailService mailService;
 
     @PostMapping("/send/{mail}")
-    public ResponseDTO sendMail(@PathVariable String mail, @RequestBody MailStructure mailStructure) {
+    public ResponseDTO sendMail(@PathVariable("mail") String mail, @RequestBody MailStructure mailStructure) {
         try {
             LOGGER.info("=== RECIBIDA PETICIÓN DE ENVÍO DE CORREO ===");
             LOGGER.info("Destinatario: {}", mail);

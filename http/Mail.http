@@ -1,0 +1,82 @@
+### ============================================
+### RAILWAY - Producción
+### ============================================
+
+### Enviar correo de prueba (Railway)
+POST http://localhost:9999/mail/send/luanhuancam@gmail.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "subject": "Prueba de Correo desde Railway",
+  "message": "Este es un correo de prueba enviado desde el backend en Railway usando SendGrid."
+}
+
+###
+
+### Enviar correo HTML (Railway)
+POST https://oasisbackend-production-eb4d.up.railway.app/mail/send/luanhuancam@gmail.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "subject": "Credenciales de Acceso a tu Cuenta",
+  "message": "<html><body><h1>Bienvenido a Oasis</h1><p>Tu contraseña temporal es: <strong>Temp123456</strong></p><p>Por favor, cambia tu contraseña después de iniciar sesión.</p></body></html>"
+}
+
+###
+
+### Enviar correo con información de usuario (Railway)
+POST https://oasisbackend-production-eb4d.up.railway.app/mail/send/luanhuancam@gmail.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "subject": "Notificación de Sistema - Oasis",
+  "message": "<html><body><h2>Hola Usuario,</h2><p>Este es un correo de prueba del sistema Oasis.</p><p>Si recibes este correo, significa que la configuración de SendGrid está funcionando correctamente.</p><p>Saludos,<br>Equipo Oasis</p></body></html>"
+}
+
+###
+
+### Probar configuración de correo (Railway)
+GET https://oasisbackend-production-eb4d.up.railway.app/mail/test
+Accept: application/json
+
+###
+
+### ============================================
+### LOCALHOST - Desarrollo Local
+### ============================================
+
+
+
+### Enviar correo de prueba (Local)
+POST http://localhost:9999/mail/send/luis.huanca.m@ucb.edu.bo
+Content-Type: application/json
+Accept: application/json
+
+{
+  "subject": "Prueba de Correo Local",
+  "message": "Este es un correo de prueba enviado desde el backend local."
+}
+
+###
+
+### Enviar correo HTML (Local)
+POST http://localhost:9999/mail/send/luanhuancam@gmail.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "subject": "Credenciales de Acceso",
+  "message": "<html><body><h1>Bienvenido</h1><p>Tu contraseña es: <strong>Temp123456</strong></p></body></html>"
+}
+
+###
+
+### Probar configuración de correo (Local)
+GET http://localhost:9999/mail/test
+Accept: application/json
+
+###
+

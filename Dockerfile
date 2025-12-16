@@ -12,8 +12,8 @@ COPY gradle ./gradle
 # Copiar código fuente
 COPY src ./src
 
-# Construir la aplicación
-RUN gradle clean build -x test --no-daemon
+# Construir la aplicación con flag -parameters para Spring
+RUN gradle clean build -x test --no-daemon -Porg.gradle.java.compile-classpath-packaging=true
 
 # Etapa 2: Runtime
 FROM eclipse-temurin:17-jre-alpine

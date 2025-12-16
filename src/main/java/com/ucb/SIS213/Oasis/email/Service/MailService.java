@@ -18,10 +18,13 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
 
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Autowired(required = false)
+    private SendGridMailService sendGridMailService;
+
+    @Value("${spring.mail.username:}")
     private String fromMail;
 
     @Value("${spring.mail.host:smtp.gmail.com}")
@@ -30,9 +33,37 @@ public class MailService {
     @Value("${spring.mail.port:587}")
     private Integer mailPort;
 
+    @Value("${mail.provider:sendgrid}")
+    private String mailProvider;
+
     public void sendMail(String mail, MailStructure mailStructure) throws MessagingException {
+        // Usar SendGrid API REST (funciona en Railway porque usa HTTPS puerto 443)
+        if ("sendgrid".equalsIgnoreCase(mailProvider) && sendGridMailService != null) {
+            LOGGER.info("Usando SendGrid API REST (HTTPS) para envío de correo");
+            sendGridMailService.sendMail(mail, mailStructure);
+            return;
+        }
+
+        // Fallback a SMTP solo si está explícitamente configurado (no funciona en Railway)
+        if ("smtp".equalsIgnoreCase(mailProvider)) {
+            LOGGER.info("Usando SMTP tradicional (NO funciona en Railway, solo para desarrollo local)");
+            sendMailViaSMTP(mail, mailStructure);
+            return;
+        }
+
+        // Si no hay proveedor configurado, intentar SendGrid
+        if (sendGridMailService != null) {
+            LOGGER.info("Proveedor no especificado, usando SendGrid por defecto");
+            sendGridMailService.sendMail(mail, mailStructure);
+            return;
+        }
+
+        throw new MessagingException("No hay proveedor de correo configurado. Configure SENDGRID_API_KEY y SENDGRID_FROM_EMAIL para Railway.");
+    }
+
+    private void sendMailViaSMTP(String mail, MailStructure mailStructure) throws MessagingException {
         try {
-            LOGGER.info("=== INICIO ENVÍO DE CORREO ===");
+            LOGGER.info("=== INICIO ENVÍO DE CORREO VÍA SMTP ===");
             LOGGER.info("Servidor SMTP: {}:{}", mailHost, mailPort);
             LOGGER.info("Correo remitente: {}", fromMail);
             LOGGER.info("Correo destinatario: {}", mail);
@@ -43,7 +74,8 @@ public class MailService {
             // Validar que el mailSender esté configurado
             if (mailSender == null) {
                 LOGGER.error("JavaMailSender no está configurado (es null)");
-                throw new MessagingException("JavaMailSender no está configurado correctamente");
+                throw new MessagingException("JavaMailSender no está configurado correctamente. " +
+                    "Para Railway, use MAIL_PROVIDER=sendgrid con SENDGRID_API_KEY y SENDGRID_FROM_EMAIL.");
             }
 
             // Validar que fromMail esté configurado
@@ -77,9 +109,9 @@ public class MailService {
             LOGGER.info("Tipo de mensaje: {}", isHtml ? "HTML" : "Texto plano");
             helper.setText(messageContent, isHtml);
 
-            LOGGER.info("Enviando mensaje...");
+            LOGGER.info("Enviando mensaje vía SMTP...");
             mailSender.send(message);
-            LOGGER.info("=== CORREO ENVIADO EXITOSAMENTE ===");
+            LOGGER.info("=== CORREO ENVIADO EXITOSAMENTE VÍA SMTP ===");
             
         } catch (MessagingException e) {
             LOGGER.error("Error de MessagingException al enviar correo: {}", e.getMessage(), e);
