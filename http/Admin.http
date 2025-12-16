@@ -20,8 +20,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "correo": "luis.huanca@tuguia.bo",
-  "password": "luish73037172"
+  "correo": "lu.huanca@tuguia.bo",
+  "password": "luh123456789"
 }
 
 ###
@@ -65,8 +65,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "correo": "manu.delgadillo@tuguia.bo",
-  "password": "manu123456789."
+  "correo": "lu.huanca@tuguia.bo",
+  "password": "luh123456789"
 }
 
 POST http://localhost:9999/api/v1/bloqueo/admin/11/desbloquear
@@ -88,8 +88,8 @@ Content-Type: application/json
 
 {
   "idAdmin": 1,
-  "correo": "manu.delgadillo@tuguia.bo",
-  "password": "manu123456789.",
+  "correo": "lu.huanca@tuguia.bo",
+  "password": "luh123456789",
   "rol": {
     "idRol": 3
   },
